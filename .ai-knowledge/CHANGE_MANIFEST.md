@@ -65,3 +65,48 @@
   - R  INSTRUCTIONS.MD -> temp/INSTRUCTIONS.MD
   - A  temp/prompt.md
 
+## 2025-06-17 21:31:35
+- **Command**: pre-commit
+- **Git Status**: 2411706
+- **Changes**: 
+  - M  .ai-knowledge/CHANGE_MANIFEST.md
+  - MM .ai-knowledge/PROJECT_STATE.md
+  - A  apps/core/fireflies_client.py
+  - A  apps/core/gemini_client.py
+  - A  apps/core/management/__init__.py
+  - A  apps/core/management/commands/__init__.py
+  - A  apps/core/management/commands/run_end_to_end_pipeline.py
+  - A  apps/core/management/commands/test_pipeline.py
+  - A  apps/core/monday_client.py
+  - M  requirements.txt
+  - M  temp/prompt.md
+
+## 2025-06-17 21:32:47
+- **Command**: pre-commit
+- **Git Status**: 7357765
+- **Changes**: 
+  -  M .ai-knowledge/CHANGE_MANIFEST.md
+  - MM .ai-knowledge/PROJECT_STATE.md
+
+## 2025-06-17 23:15:00
+- **Command**: manual
+- **Git Status**: pending
+- **Changes**: 
+  - M  .ai-knowledge/PROJECT_STATE.md
+  - M  .ai-knowledge/CHANGE_MANIFEST.md
+  - M  apps/core/monday_client.py
+  - A  apps/core/management/commands/test_monday_integration.py
+- **Enhancement**: Monday.com Field Mapping Corrections
+- **Details**: 
+  - Updated Monday.com client with correct API key and field mappings
+  - Implemented proper field IDs: text_mkr7jgkp, status_1, status, long_text, date_mkr7ymmh
+  - All field mappings verified and tested successfully
+  - 100% success rate with 6/6 tasks created in Monday.com
+  - Created test command for Monday.com integration validation
+- **Test Results**:
+  - API Documentation Review → Monday.com ID: 9397906308
+  - Authentication Bug Fix → Monday.com ID: 9397906542
+  - Client Demo Scheduling → Monday.com ID: 9397906779
+  - Field Mapping Test → Monday.com ID: 9397909038
+- **Status**: Complete and operational
+

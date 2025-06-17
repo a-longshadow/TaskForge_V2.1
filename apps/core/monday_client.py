@@ -6,6 +6,7 @@ import logging
 import requests
 import json
 from typing import List, Dict, Any, Optional
+from datetime import datetime
 from django.conf import settings
 
 logger = logging.getLogger('apps.core.monday_client')
@@ -22,7 +23,8 @@ class MondayClient:
         self.session = requests.Session()
         self.session.headers.update({
             'Authorization': api_key,
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'API-Version': '2023-10'
         })
     
     def _execute_query(self, query: str, variables: Optional[Dict] = None) -> Dict[str, Any]:
@@ -49,49 +51,79 @@ class MondayClient:
             raise Exception(f"Monday.com API request failed: {e}")
     
     def create_task_item(self, task_data: Dict[str, Any]) -> Optional[str]:
-        """Create a new item in Monday.com from extracted task data"""
+        """Create a new item in Monday.com from extracted task data
+        
+        Expected task_data format (from Gemini AI extraction):
+        {
+            "task_item": "Task name/title",
+            "assignee_emails": "email1@domain.com,email2@domain.com",
+            "assignee(s)_full_names": "John Doe,Jane Smith", 
+            "priority": "High|Medium|Low",
+            "brief_description": "30-50 word description",
+            "due_date": 1234567890000,  # UTC milliseconds or null
+            "status": "To Do|Stuck|Working on it|Waiting for review|Approved|Done"
+        }
+        
+        Monday.com field mappings:
+        1. task name -> item_name (built-in)
+        2. team member -> text_mkr7jgkp (text column)
+        3. priority -> status_1 (status column)  
+        4. Status -> status (status column)
+        5. brief description -> long_text (long text column)
+        6. date expected -> date_mkr7ymmh (date column)
+        """
         
         # Extract task information
         task_title = task_data.get('task_item', 'Untitled Task')
         assignee_emails = task_data.get('assignee_emails', '')
+        assignee_names = task_data.get('assignee(s)_full_names', '')
         priority = task_data.get('priority', 'Medium')
         description = task_data.get('brief_description', '')
         status = task_data.get('status', 'To Do')
+        due_date_ms = task_data.get('due_date')
         
-        # Map TaskForge status to Monday.com status (using actual board labels)
+        # Build column values using the correct field IDs
+        column_values = {}
+        
+        # 1. Task name is handled by item_name parameter
+        
+        # 2. Team member (full name) - text_mkr7jgkp
+        if assignee_names:
+            column_values['text_mkr7jgkp'] = assignee_names
+        
+        # 3. Priority - status_1 (map to Monday.com priority values)
+        priority_mapping = {
+            'High': 'High',
+            'Medium': 'Medium', 
+            'Low': 'Low'
+        }
+        if priority in priority_mapping:
+            column_values['status_1'] = priority_mapping[priority]
+        
+        # 4. Status - status (map to Monday.com status values)
         status_mapping = {
             'To Do': 'To Do',
             'Working on it': 'Working on it', 
             'Stuck': 'Stuck',
             'Waiting for review': 'Waiting for review',
-            'Review': 'Review',
             'Approved': 'Approved',
-            'Done': 'Done',
-            'Deprioritized': 'Deprioritized'
+            'Done': 'Done'
         }
-        monday_status = status_mapping.get(status, 'To Do')
+        if status in status_mapping:
+            column_values['status'] = status_mapping[status]
         
-        # Map priority
-        priority_mapping = {
-            'Low': 'low',
-            'Medium': 'medium', 
-            'High': 'high'
-        }
-        monday_priority = priority_mapping.get(priority, 'medium')
-        
-        # Build column values
-        column_values = {
-            'status': monday_status,
-            'priority': monday_priority
-        }
-        
-        # Skip person column for demo (emails don't exist in Monday.com workspace)
-        # if assignee_emails:
-        #     column_values['person'] = assignee_emails
-        
-        # Add description as text column
+        # 5. Brief description - long_text
         if description:
-            column_values['text'] = description
+            column_values['long_text'] = description
+            
+        # 6. Date expected - date_mkr7ymmh (convert from UTC ms to date string)
+        if due_date_ms:
+            try:
+                # Convert UTC milliseconds to date string (YYYY-MM-DD format)
+                due_date = datetime.fromtimestamp(due_date_ms / 1000.0)
+                column_values['date_mkr7ymmh'] = due_date.strftime('%Y-%m-%d')
+            except (ValueError, TypeError) as e:
+                logger.warning(f"Invalid due_date format: {due_date_ms}, error: {e}")
         
         mutation = """
         mutation CreateItem($boardId: ID!, $groupId: String!, $itemName: String!, $columnValues: JSON!) {
@@ -114,6 +146,9 @@ class MondayClient:
             'columnValues': json.dumps(column_values)
         }
         
+        logger.info(f"Creating Monday.com item: {task_title}")
+        logger.info(f"Column values: {column_values}")
+        
         try:
             data = self._execute_query(mutation, variables)
             created_item = data.get('create_item')
@@ -121,18 +156,18 @@ class MondayClient:
             if created_item:
                 item_id = created_item.get('id')
                 item_name = created_item.get('name')
-                logger.info(f"Created Monday.com item: {item_name} (ID: {item_id})")
+                logger.info(f"Successfully created Monday.com item: {item_name} (ID: {item_id})")
                 return item_id
             else:
                 logger.error("No item returned from Monday.com create mutation")
                 return None
                 
         except Exception as e:
-            logger.error(f"Failed to create Monday.com item: {e}")
+            logger.error(f"Failed to create Monday.com item '{task_title}': {e}")
             return None
     
     def get_board_info(self) -> Optional[Dict[str, Any]]:
-        """Get information about the configured board"""
+        """Get information about the configured board including column details"""
         query = """
         query GetBoard($boardId: ID!) {
             boards(ids: [$boardId]) {
@@ -147,6 +182,7 @@ class MondayClient:
                     id
                     title
                     type
+                    settings_str
                 }
             }
         }
@@ -161,6 +197,13 @@ class MondayClient:
             if boards:
                 board = boards[0]
                 logger.info(f"Board info: {board.get('name', 'Unknown')} (ID: {board.get('id')})")
+                
+                # Log column information for debugging
+                columns = board.get('columns', [])
+                logger.info("Available columns:")
+                for col in columns:
+                    logger.info(f"  - {col.get('title')} (ID: {col.get('id')}, Type: {col.get('type')})")
+                
                 return board
             else:
                 logger.warning(f"Board {self.board_id} not found")
@@ -199,20 +242,19 @@ class MondayClient:
     
     def bulk_create_tasks(self, tasks: List[Dict[str, Any]]) -> List[Optional[str]]:
         """Create multiple tasks in Monday.com"""
-        created_items = []
+        results = []
         
-        for task in tasks:
+        for i, task in enumerate(tasks):
+            logger.info(f"Creating task {i+1}/{len(tasks)}: {task.get('task_item', 'Untitled')}")
             item_id = self.create_task_item(task)
-            created_items.append(item_id)
+            results.append(item_id)
             
-        successful_creates = [item_id for item_id in created_items if item_id is not None]
-        logger.info(f"Successfully created {len(successful_creates)} out of {len(tasks)} tasks in Monday.com")
-        
-        return created_items
+        return results
 
 
 def get_monday_client() -> MondayClient:
     """Get configured Monday.com client"""
+    # Use the working API key provided by the user
     api_key = "eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjUxMjQzODA4NiwiYWFpIjoxMSwidWlkIjo3MzMxNjk3OCwiaWFkIjoiMjAyNS0wNS0xM1QyMTozMDozNy4zODFaIiwicGVyIjoibWU6d3JpdGUiLCJhY3RpZCI6Mjg0NjkxNTUsInJnbiI6InVzZTEifQ.H-EfNBJS5SZ0PV3D9RffC_fuyuOnVwxVmgOWRvjg3f0"
     board_id = "9212659997"
     group_id = "group_mkqyryrz"

@@ -32,7 +32,14 @@ class FirefliesClient:
         
         try:
             response = self.session.post(self.base_url, json=payload, timeout=30)
-            response.raise_for_status()
+            
+            # Log the raw response for debugging
+            logger.info(f"Fireflies API Response Status: {response.status_code}")
+            logger.info(f"Fireflies API Response Body: {response.text}")
+            
+            if response.status_code != 200:
+                logger.error(f"Fireflies API HTTP Error {response.status_code}: {response.text}")
+                raise Exception(f"Fireflies API HTTP Error {response.status_code}: {response.text}")
             
             data = response.json()
             
@@ -57,14 +64,18 @@ class FirefliesClient:
             transcripts(startDate: $startDate, endDate: $endDate) {
                 id
                 title
-                date_uploaded
+                date
                 duration
                 summary {
                     overview
                     action_items
                     keywords
                 }
-                transcript_text
+                sentences {
+                    speaker_name
+                    text
+                    start_time
+                }
                 meeting_attendees {
                     displayName
                     email
@@ -97,14 +108,18 @@ class FirefliesClient:
             transcript(id: $id) {
                 id
                 title
-                date_uploaded
+                date
                 duration
                 summary {
                     overview
                     action_items
                     keywords
                 }
-                transcript_text
+                sentences {
+                    speaker_name
+                    text
+                    start_time
+                }
                 meeting_attendees {
                     displayName
                     email

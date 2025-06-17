@@ -50,6 +50,9 @@ class GeminiClient:
     def extract_tasks_from_transcript(self, transcript_data: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Extract action items from meeting transcript using the TaskForge prompt"""
         
+        # Convert sentences to transcript text
+        transcript_text = self._format_sentences(transcript_data.get('sentences', []))
+        
         # Build the prompt using the TaskForge format from temp/prompt.md
         prompt = f"""=== System ===
 You are **TaskForge**, an expert AI assistant whose only objective is to extract
@@ -73,7 +76,7 @@ source material.
 Process only this meeting-transcript JSON:
 
 * title                → {transcript_data.get('title', 'Untitled Meeting')}  
-* meeting_date_ms      → {transcript_data.get('date_uploaded', '')}  
+* meeting_date_ms      → {transcript_data.get('date', '')}  
 * organizer_email      → {transcript_data.get('organizer_email', '')}  
 
 Attendees (name ↔ email):  
@@ -86,7 +89,7 @@ Meeting Overview:
 {transcript_data.get('summary', {}).get('overview', 'No overview available')}
 
 Full Transcript:  
-{transcript_data.get('transcript_text', 'No transcript available')}
+{transcript_text}
 
 Return ONLY the JSON array described above."""
         
@@ -134,6 +137,22 @@ Return ONLY the JSON array described above."""
         except Exception as e:
             logger.error(f"Failed to extract tasks: {e}")
             return []
+    
+    def _format_sentences(self, sentences: List[Dict[str, Any]]) -> str:
+        """Format sentences into transcript text"""
+        if not sentences:
+            return "No transcript available"
+        
+        formatted_sentences = []
+        for sentence in sentences:
+            speaker = sentence.get('speaker_name', 'Unknown')
+            text = sentence.get('text', '')
+            start_time = sentence.get('start_time', 0)
+            
+            if text:
+                formatted_sentences.append(f"{speaker}: {text}")
+        
+        return "\n".join(formatted_sentences)
     
     def _format_attendees(self, attendees: List[Dict[str, Any]]) -> str:
         """Format attendees for the prompt"""
