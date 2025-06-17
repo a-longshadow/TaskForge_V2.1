@@ -1,0 +1,55 @@
+/* TaskForge V2.1 Base Styles */
+
+:root {
+    --primary-color: #0d6efd;
+    --success-color: #198754;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --guardian-color: #20c997;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+}
+
+.navbar-brand {
+    font-weight: 600;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    transition: box-shadow 0.15s ease-in-out;
+}
+
+.card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.guardian-badge {
+    background-color: var(--guardian-color) !important;
+    animation: guardian-pulse 2s infinite;
+}
+
+@keyframes guardian-pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.8; }
+    100% { opacity: 1; }
+}
+
+.system-status {
+    font-size: 0.875rem;
+}
+
+.module-status {
+    transition: all 0.3s ease;
+}
+
+.module-status:hover {
+    transform: translateY(-2px);
+}
+
+footer {
+    margin-top: auto;
+} 

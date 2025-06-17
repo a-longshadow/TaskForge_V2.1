@@ -1,0 +1,1 @@
+# Core app with Guardian integration and modular architecture 
