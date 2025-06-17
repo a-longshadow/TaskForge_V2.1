@@ -13,12 +13,14 @@ This folder contains all binding agreements and guidelines for the TaskForge V2.
 ```
 project-guidelines/
 ├── README.md                    # This file - overview and index
-├── CORE_ARCHITECTURE.md         # Original system architecture
+├── CORE_ARCHITECTURE.md         # Original system architecture (UPDATED for Django)
 ├── GUARDIAN_SYSTEM.md           # Guardian safeguards and knowledge management
 ├── MODULAR_DESIGN.md           # Module independence and communication
 ├── AI_AGENT_PROTOCOLS.md       # AI agent governance and approval gates
-├── DEPLOYMENT_STRATEGY.md      # Deployment and rollback procedures
-└── IMPLEMENTATION_PHASES.md    # Staged development approach
+├── DEPLOYMENT_STRATEGY.md      # Deployment and rollback procedures (UPDATED for Django)
+├── IMPLEMENTATION_PHASES.md    # Staged development approach
+├── PROJECT_SKELETON.md         # Complete Django project structure
+└── DEVELOPMENT_WORKFLOW.md     # Step-by-step development process
 ```
 
 ## Key Principles
