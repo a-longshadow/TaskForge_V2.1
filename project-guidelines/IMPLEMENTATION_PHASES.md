@@ -112,19 +112,66 @@ modules/
 
 ---
 
-## Phase 3: Individual Modules (Each 15-20 minutes)
+## Phase 3: Individual Modules (2 hours total)
 **Dependencies**: Phase 2 complete  
 **Modules are completely independent - can be built in any order**
 
-### Module 3A: Ingestion Module
-**External Integration**: Fireflies API
+### Authentication Module (30 minutes)
+**User Management**: Custom Django authentication system
 
 #### Deliverables
-- Fireflies API client with authentication
+- Custom user model with security questions integration
+- Admin-only user creation (no public registration)
+- Security question-based password reset system
+- Role-based access control (admin/superadmin)
+- Email whitelist validation system
+- Django admin integration with bulk user management
+
+#### Guardian Protection
+```bash
+./guardian.sh --module=authentication --build --django-auth
+./guardian.sh --test-auth --security-validation
+```
+
+#### Success Criteria
+- [ ] Custom user model operational
+- [ ] Admin-only registration working
+- [ ] Security questions functional
+- [ ] Role-based permissions active
+
+### Frontend Dashboard (30 minutes)
+**User Interface**: Modern responsive dashboard
+
+#### Deliverables
+- Bootstrap 5.3 interface with TaskForge theming
+- Real-time health status indicators with Guardian integration
+- Interactive dashboard showing system metrics and statistics
+- Responsive design with mobile-first approach
+- Circuit breaker status visualization
+- Event bus activity monitoring
+
+#### Guardian Protection
+```bash
+./guardian.sh --module=frontend --build --ui-components
+./guardian.sh --test-dashboard --responsive-design
+```
+
+#### Success Criteria
+- [ ] Dashboard accessible and functional
+- [ ] Real-time updates working
+- [ ] Responsive design complete
+- [ ] Guardian status integration active
+
+### Module 3A: Ingestion Module (30 minutes)
+**External Integration**: Fireflies GraphQL API
+
+#### Deliverables
+- Fireflies GraphQL API client with authentication
+- Today's meetings retrieval system
 - Automated backfill system (15-minute intervals)
 - Daily delta sync process
-- Transcript storage in PostgreSQL JSONB
-- Error handling and retry logic
+- Transcript storage in Django models (JSONB)
+- Error handling and retry logic with circuit breakers
 
 #### Guardian Protection
 ```bash
@@ -134,19 +181,20 @@ modules/
 
 #### Success Criteria
 - [ ] Fireflies API connection working
-- [ ] Transcripts ingested and stored
+- [ ] Today's transcripts retrieved
 - [ ] 15-minute sync operational
 - [ ] Can run independently if other modules fail
 
-### Module 3B: Processing Module
-**External Integration**: Gemini API
+### Module 3B: Processing Module (30 minutes)
+**External Integration**: Google Gemini API
 
 #### Deliverables
 - Gemini API client for AI processing
 - Task extraction from transcripts
 - Post-processing (dedupe, word counts, date validation)
-- Queue management for processing jobs
+- Queue management for processing jobs with Celery
 - Daily briefing generation
+- AI prompt optimization for task extraction
 
 #### Guardian Protection
 ```bash
@@ -160,37 +208,16 @@ modules/
 - [ ] Post-processing rules applied
 - [ ] Can queue work if other modules unavailable
 
-### Module 3C: Review Module
-**User Interface**: Dashboard for human review
+### Module 3C: Delivery Module (30 minutes)
+**External Integration**: Monday.com GraphQL API
 
 #### Deliverables
-- Web dashboard for task review
-- Real-time UI updates
-- 18-hour review window tracking
-- Stale task alerts
-- Approve/reject/edit functionality
-
-#### Guardian Protection
-```bash
-./guardian.sh --module=review --build --ui-components
-./guardian.sh --test-dashboard --user-workflows
-```
-
-#### Success Criteria
-- [ ] Dashboard accessible and functional
-- [ ] Real-time updates working
-- [ ] Review workflows complete
-- [ ] Can operate independently of other modules
-
-### Module 3D: Delivery Module
-**External Integration**: Monday.com API
-
-#### Deliverables
-- Monday.com API client
-- Auto-push for tasks >18 hours old
+- Monday.com GraphQL API client
+- Auto-push for processed tasks
 - Delivery logging and tracking
 - Error handling and retry logic
 - Status synchronization
+- Board and group management
 
 #### Guardian Protection
 ```bash

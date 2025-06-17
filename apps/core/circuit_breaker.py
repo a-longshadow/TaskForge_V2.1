@@ -100,4 +100,23 @@ class CircuitBreakerRegistry:
     def get_or_create(self, name: str, **kwargs) -> CircuitBreaker:
         if name not in self.circuit_breakers:
             self.circuit_breakers[name] = CircuitBreaker(name=name, **kwargs)
-        return self.circuit_breakers[name] 
+        return self.circuit_breakers[name]
+    
+    def get_all_stats(self) -> Dict[str, Any]:
+        """Get statistics for all circuit breakers"""
+        stats = {}
+        for name, breaker in self.circuit_breakers.items():
+            stats[name] = {
+                'state': breaker.state.value,
+                'failure_count': breaker.failure_count,
+                'success_count': breaker.success_count,
+                'last_failure_time': breaker.last_failure_time.isoformat() if breaker.last_failure_time else None,
+                'last_success_time': breaker.last_success_time.isoformat() if breaker.last_success_time else None,
+                'failure_threshold': breaker.failure_threshold,
+                'timeout': breaker.timeout
+            }
+        
+        return {
+            'total_breakers': len(self.circuit_breakers),
+            'breakers': stats
+        } 
