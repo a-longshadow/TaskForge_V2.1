@@ -9,9 +9,9 @@ GUARDIAN_ENABLED = True
 GUARDIAN_KNOWLEDGE_DIR = BASE_DIR / '.ai-knowledge'
 
 # Security
-SECRET_KEY = config('SECRET_KEY', default='django-insecure-dev-key-change-in-production')
+SECRET_KEY = config('DJANGO_SECRET_KEY', default='django-insecure-your-secret-key-here')
 DEBUG = config('DEBUG', default=True, cast=bool)
-ALLOWED_HOSTS = ['*']  # Will be restricted in production
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=lambda v: [s.strip() for s in v.split(',')])
 
 # Django Apps
 DJANGO_APPS = [
@@ -71,11 +71,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'taskforge.wsgi.application'
 
-# Database - SQLite for Phase 2 development
+# Database - PostgreSQL for production readiness
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DATABASE_NAME', default='taskforge'),
+        'USER': config('DATABASE_USER', default='joe'),
+        'PASSWORD': config('DATABASE_PASSWORD', default=''),
+        'HOST': config('DATABASE_HOST', default='localhost'),
+        'PORT': config('DATABASE_PORT', default='5432'),
+        'OPTIONS': {
+            'connect_timeout': 20,
+        },
     }
 }
 
@@ -116,72 +123,180 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Logging
+LOG_ROOT = BASE_DIR / 'logs'
+LOG_ROOT.mkdir(exist_ok=True)
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
-    'handlers': {
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': BASE_DIR / 'logs' / 'django.log',
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
         },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+        'cache': {
+            'format': '[CACHE] {asctime} {levelname} {module}: {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
         'console': {
-            'level': 'DEBUG',
             'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+        'file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': str(LOG_ROOT / 'django.log'),
+            'maxBytes': 1024*1024*50,  # 50 MB
+            'backupCount': 5,
+            'formatter': 'verbose',
+        },
+        'cache_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': str(LOG_ROOT / 'cache' / 'cache_operations.log'),
+            'maxBytes': 1024*1024*10,  # 10 MB
+            'backupCount': 3,
+            'formatter': 'cache',
+        },
+        'fireflies_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': str(LOG_ROOT / 'cache' / 'fireflies_cache.log'),
+            'maxBytes': 1024*1024*10,  # 10 MB
+            'backupCount': 3,
+            'formatter': 'cache',
         },
     },
     'loggers': {
         'django': {
-            'handlers': ['file', 'console'],
+            'handlers': ['console', 'file'],
             'level': 'INFO',
             'propagate': True,
         },
-        'apps': {
-            'handlers': ['file', 'console'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-        'guardian': {
-            'handlers': ['file', 'console'],
+        'apps.core.fireflies_client': {
+            'handlers': ['console', 'fireflies_file'],
             'level': 'INFO',
-            'propagate': True,
+            'propagate': False,
+        },
+        'django.core.cache': {
+            'handlers': ['cache_file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'cache_operations': {
+            'handlers': ['cache_file'],
+            'level': 'INFO',
+            'propagate': False,
         },
     },
 }
 
-# Create logs directory
-os.makedirs(BASE_DIR / 'logs', exist_ok=True)
+# Cache Configuration - Django Best Practices
+CACHE_ROOT = BASE_DIR / 'cache'
+CACHE_ROOT.mkdir(exist_ok=True)
 
-# Cache
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-    }
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': str(CACHE_ROOT / 'django_cache'),
+        'TIMEOUT': 14400,  # 4 hours default
+        'OPTIONS': {
+            'MAX_ENTRIES': 10000,
+            'CULL_FREQUENCY': 3,  # Remove 1/3 of entries when MAX_ENTRIES reached
+        },
+    },
+    'fireflies': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': str(CACHE_ROOT / 'fireflies_cache'),
+        'TIMEOUT': 14400,  # 4 hours
+        'OPTIONS': {
+            'MAX_ENTRIES': 1000,
+            'CULL_FREQUENCY': 4,
+        },
+    },
+    'gemini': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': str(CACHE_ROOT / 'gemini_cache'),
+        'TIMEOUT': 1800,  # 30 minutes
+        'OPTIONS': {
+            'MAX_ENTRIES': 5000,
+            'CULL_FREQUENCY': 3,
+        },
+    },
+    'sessions': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': str(CACHE_ROOT / 'sessions'),
+        'TIMEOUT': 86400,  # 24 hours
+        'OPTIONS': {
+            'MAX_ENTRIES': 1000,
+            'CULL_FREQUENCY': 2,
+        },
+    },
 }
 
-# Celery Configuration (for Phase 2 - basic setup)
-CELERY_BROKER_URL = 'memory://'
-CELERY_RESULT_BACKEND = 'cache+memory://'
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
+# Session Configuration
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_CACHE_ALIAS = 'sessions'
+SESSION_COOKIE_AGE = 86400  # 24 hours
 
-# External APIs (placeholders for Phase 2)
+# Feature Flags
+FEATURE_FLAGS = {
+    'ENABLE_AI_PROCESSING': True,
+    'ENABLE_AUTO_PUSH': True,
+    'ENABLE_REAL_TIME_UPDATES': True,
+    'ENABLE_ADVANCED_LOGGING': True,
+    'ENABLE_CIRCUIT_BREAKER': True,
+}
+
+# Health Check Configuration
+HEALTH_CHECK = {
+    'ENABLED': True,
+    'CHECK_DATABASE': True,
+    'CHECK_CACHE': True,
+    'CHECK_EXTERNAL_APIS': True,
+    'TIMEOUT': 10,  # seconds
+}
+
+# External APIs (Enhanced with caching and rate limiting)
 EXTERNAL_APIS = {
     'FIREFLIES': {
         'BASE_URL': 'https://api.fireflies.ai/graphql',
         'API_KEY': config('FIREFLIES_API_KEY', default=''),
-        'TIMEOUT': 30,
+        'FAILOVER_KEY': '3482aac6-8fc3-4109-9ff9-31fef2a458eb',  # Primary failover key
+        'SECONDARY_KEY': 'c908d0c7-c4eb-4d7b-a303-3b5673464e2e',  # Secondary failover key (Joe Maina)
+        'TIMEOUT': 60,
+        'CACHE_TIMEOUT': 14400,  # 4 hours
+        'RATE_LIMIT_PER_MINUTE': 20,
+        'PAGINATION_SIZE': 50,
+        'MAX_PAGES': 10,
+        'MIN_REQUEST_INTERVAL': 3.0,
     },
     'GEMINI': {
-        'API_KEY': config('GEMINI_API_KEY', default=''),
-        'MODEL': 'gemini-pro',
-        'TIMEOUT': 30,
+        'BASE_URL': 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
+        'API_KEY': config('GEMINI_API_KEY', default='AIzaSyBWArylUmDVmRuASiZMQ6DiI5IDDsG9bfw'),
+        'RATE_LIMIT_PER_MINUTE': 15,
+        'MIN_REQUEST_INTERVAL': 4.0,
+        'CACHE_TIMEOUT': 1800,  # 30 minutes
+        'QUOTA_WARNING_THRESHOLD': 80,
+        'RETRY_ATTEMPTS': 3,
+        'BACKOFF_FACTOR': 2.0,
+        'TIMEOUT': 60,
     },
     'MONDAY': {
         'BASE_URL': 'https://api.monday.com/v2',
-        'API_KEY': config('MONDAY_API_KEY', default=''),
+        'API_KEY': config('MONDAY_API_KEY', default='eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjQxNzI1MzIwNiwiYWFpIjoxMSwidWlkIjo2NzYwNTQ5NCwiaWFkIjoiMjAyNS0wNS0xM1QxNDoxNToyNi4wMDBaIiwicGVyIjoibWU6d3JpdGUiLCJhY3RpZCI6MjY5NTEzNjQsInJnbiI6InVzZTEifQ.PYgTgWyVfMq8-bBQRlCGBBRZFHI0VEGnIgwYjWp-sZM'),
+        'BOARD_ID': config('MONDAY_BOARD_ID', default='9212659997'),
+        'GROUP_ID': config('MONDAY_GROUP_ID', default='group_mkqyryrz'),
         'TIMEOUT': 30,
+        'RETRY_ATTEMPTS': 3,
+        'RATE_LIMIT_PER_MINUTE': 30,
+        'MIN_REQUEST_INTERVAL': 2.0,
+        'QUOTA_WARNING_THRESHOLD': 80,
+        'BACKOFF_FACTOR': 2.0,
+        'MAX_BACKOFF_TIME': 300,
     },
 }
 
@@ -206,29 +321,41 @@ GUARDIAN_SETTINGS = {
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Development
 DEFAULT_FROM_EMAIL = 'noreply@taskforge.com'
 
-# Session Configuration
-SESSION_COOKIE_AGE = 86400  # 24 hours
-SESSION_COOKIE_SECURE = False  # Will be True in production
-SESSION_COOKIE_HTTPONLY = True
-
 # CSRF Protection
 CSRF_COOKIE_SECURE = False  # Will be True in production
 CSRF_COOKIE_HTTPONLY = True
 
-# Feature Flags
-FEATURE_FLAGS = {
-    'ENABLE_AI_PROCESSING': True,
-    'ENABLE_AUTO_PUSH': True,
-    'ENABLE_REAL_TIME_UPDATES': True,
-    'ENABLE_ADVANCED_LOGGING': True,
-    'ENABLE_CIRCUIT_BREAKER': True,
+# Security Settings
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+
+# Celery Configuration (for Phase 2 - basic setup)
+CELERY_BROKER_URL = config('REDIS_URL', default='redis://localhost:6379/0')
+CELERY_RESULT_BACKEND = config('REDIS_URL', default='redis://localhost:6379/0')
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
+
+# Cache Key Prefixes
+CACHE_KEY_PREFIXES = {
+    'FIREFLIES_COMPREHENSIVE': 'fireflies:comprehensive:',
+    'FIREFLIES_TODAY': 'fireflies:today:',
+    'FIREFLIES_PAGINATION': 'fireflies:pagination:',
+    'FIREFLIES_SYNC': 'fireflies:sync:',
+    'GEMINI_EXTRACTION': 'gemini:extract:',
+    'GEMINI_QUOTA': 'gemini:quota:',
+    'MONDAY_DELIVERY': 'monday:delivery:',
+    'SYSTEM_HEALTH': 'system:health:',
+    'API_STATUS': 'api:status:',
 }
 
-# Health Check Configuration
-HEALTH_CHECK = {
-    'ENABLED': True,
-    'CHECK_DATABASE': True,
-    'CHECK_CACHE': True,
-    'CHECK_EXTERNAL_APIS': True,
-    'TIMEOUT': 10,  # seconds
+# Cache Timeout Settings
+CACHE_TIMEOUTS = {
+    'FIREFLIES_COMPREHENSIVE': 14400,  # 4 hours
+    'FIREFLIES_TODAY': 3600,           # 1 hour
+    'GEMINI_EXTRACTION': 1800,         # 30 minutes
+    'SYSTEM_HEALTH': 300,              # 5 minutes
+    'API_STATUS': 600,                 # 10 minutes
 } 

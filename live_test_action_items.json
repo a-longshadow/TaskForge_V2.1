@@ -1,0 +1,325 @@
+[
+  {
+    "id": "68349b5c-171a-4c26-89c7-e96c09e1fbed",
+    "transcript_title": "Ops meeting",
+    "task_item": "Take a clear screenshot of the 'access denied' error encountered when attempting to log into the decentralized vector database application.",
+    "assignee": "Joe Maina",
+    "priority": "high",
+    "due_date": "2024-10-18",
+    "description": "Capture the specific error message preventing access to the decentralized vector database. This screenshot is crucial for debugging and resolving the login issue, enabling further beta testing of the application.",
+    "status": "pending",
+    "extraction_metadata": {
+      "task_item": "Take a clear screenshot of the 'access denied' error encountered when attempting to log into the decentralized vector database application.",
+      "assignee_emails": "joe@coophive.network",
+      "assignee(s)_full_names": "Joe Maina",
+      "priority": "High",
+      "brief_description": "Capture the specific error message preventing access to the decentralized vector database. This screenshot is crucial for debugging and resolving the login issue, enabling further beta testing of the application.",
+      "due_date": 1729219199000,
+      "status": "To Do"
+    }
+  },
+  {
+    "id": "a1dfe1f3-e70d-4be2-abfa-2df31d076a8a",
+    "transcript_title": "Ops meeting",
+    "task_item": "Deploy the developed Django application to the Vercel production environment, ensuring it is fully accessible and operational for team testing.",
+    "assignee": "Joe Maina",
+    "priority": "high",
+    "due_date": "2024-10-19",
+    "description": "Transition the developed Django application from local host to a live Vercel production environment. This deployment is critical for enabling broader internal testing and preparing the system for further integrations and scalability.",
+    "status": "pending",
+    "extraction_metadata": {
+      "task_item": "Deploy the developed Django application to the Vercel production environment, ensuring it is fully accessible and operational for team testing.",
+      "assignee_emails": "joe@coophive.network",
+      "assignee(s)_full_names": "Joe Maina",
+      "priority": "High",
+      "brief_description": "Transition the developed Django application from local host to a live Vercel production environment. This deployment is critical for enabling broader internal testing and preparing the system for further integrations and scalability.",
+      "due_date": 1729305599000,
+      "status": "To Do"
+    }
+  },
+  {
+    "id": "ecbf456e-c541-4a45-af0a-9ae71102e1f6",
+    "transcript_title": "Ops meeting",
+    "task_item": "Prepare and send a concise brief outlining the efforts and challenges encountered during the attempt to integrate with Google Drive for storage solutions.",
+    "assignee": "Joe Maina",
+    "priority": "medium",
+    "due_date": "2024-10-18",
+    "description": "Document the process of attempting Google Drive integration, including any specific technical issues or limitations identified. This brief will inform decisions regarding data storage architecture and potential future exploration of Google Drive.",
+    "status": "pending",
+    "extraction_metadata": {
+      "task_item": "Prepare and send a concise brief outlining the efforts and challenges encountered during the attempt to integrate with Google Drive for storage solutions.",
+      "assignee_emails": "joe@coophive.network",
+      "assignee(s)_full_names": "Joe Maina",
+      "priority": "Medium",
+      "brief_description": "Document the process of attempting Google Drive integration, including any specific technical issues or limitations identified. This brief will inform decisions regarding data storage architecture and potential future exploration of Google Drive.",
+      "due_date": 1729219199000,
+      "status": "To Do"
+    }
+  },
+  {
+    "id": "4180a941-76b2-4eaf-b01e-83dbd0fbefdd",
+    "transcript_title": "Ops meeting",
+    "task_item": "Contact Vardhan via Discord to schedule a brief 15-minute demo session for beta testing the decentralized vector database application.",
+    "assignee": "Joe Maina",
+    "priority": "high",
+    "due_date": "2024-10-18",
+    "description": "Initiate contact with Vardhan to arrange a short demonstration for both Joe and Andrew. This session is essential for understanding the application's functionality and commencing comprehensive beta testing.",
+    "status": "pending",
+    "extraction_metadata": {
+      "task_item": "Contact Vardhan via Discord to schedule a brief 15-minute demo session for beta testing the decentralized vector database application.",
+      "assignee_emails": "joe@coophive.network",
+      "assignee(s)_full_names": "Joe Maina",
+      "priority": "High",
+      "brief_description": "Initiate contact with Vardhan to arrange a short demonstration for both Joe and Andrew. This session is essential for understanding the application's functionality and commencing comprehensive beta testing.",
+      "due_date": 1729219199000,
+      "status": "To Do"
+    }
+  },
+  {
+    "id": "2ca2cee8-5c05-46dc-b958-a559f884c0d2",
+    "transcript_title": "Ops meeting",
+    "task_item": "Take a clear screenshot of the 'access denied' error encountered when attempting to log into the decentralized vector database application.",
+    "assignee": "Andrew Hemingway",
+    "priority": "high",
+    "due_date": "2024-10-18",
+    "description": "Capture the specific error message preventing access to the decentralized vector database. This screenshot is crucial for debugging and resolving the login issue, enabling further beta testing of the application.",
+    "status": "pending",
+    "extraction_metadata": {
+      "task_item": "Take a clear screenshot of the 'access denied' error encountered when attempting to log into the decentralized vector database application.",
+      "assignee_emails": "andrew@coophive.network",
+      "assignee(s)_full_names": "Andrew Hemingway",
+      "priority": "High",
+      "brief_description": "Capture the specific error message preventing access to the decentralized vector database. This screenshot is crucial for debugging and resolving the login issue, enabling further beta testing of the application.",
+      "due_date": 1729219199000,
+      "status": "To Do"
+    }
+  },
+  {
+    "id": "b2c9a112-4aa3-407f-98ef-b5d40ea5e548",
+    "transcript_title": "Ops meeting",
+    "task_item": "Continue collaborating closely with Joe on the completion of the Monday.com system, ensuring all necessary functionalities and restructures are implemented effectively.",
+    "assignee": "Andrew Hemingway",
+    "priority": "high",
+    "due_date": "2024-10-19",
+    "description": "Work with Joe to finalize the Monday.com system, focusing on resolving any remaining issues and optimizing its structure for efficient task management and project oversight. This is crucial for overall workflow improvement.",
+    "status": "pending",
+    "extraction_metadata": {
+      "task_item": "Continue collaborating closely with Joe on the completion of the Monday.com system, ensuring all necessary functionalities and restructures are implemented effectively.",
+      "assignee_emails": "andrew@coophive.network",
+      "assignee(s)_full_names": "Andrew Hemingway",
+      "priority": "High",
+      "brief_description": "Work with Joe to finalize the Monday.com system, focusing on resolving any remaining issues and optimizing its structure for efficient task management and project oversight. This is crucial for overall workflow improvement.",
+      "due_date": 1729305599000,
+      "status": "To Do"
+    }
+  },
+  {
+    "id": "bc5c03d1-5dcd-4109-8711-841147b232c3",
+    "transcript_title": "Ops meeting",
+    "task_item": "Review Quincy's message in Upwork regarding project deliverables and formulate a comprehensive and timely response addressing all relevant points.",
+    "assignee": "Andrew Hemingway",
+    "priority": "medium",
+    "due_date": "2024-10-18",
+    "description": "Access Upwork to read the communication from Quincy concerning project deliverables. Prepare and send a reply that clarifies expectations, addresses any questions, and confirms understanding of the next steps.",
+    "status": "pending",
+    "extraction_metadata": {
+      "task_item": "Review Quincy's message in Upwork regarding project deliverables and formulate a comprehensive and timely response addressing all relevant points.",
+      "assignee_emails": "andrew@coophive.network",
+      "assignee(s)_full_names": "Andrew Hemingway",
+      "priority": "Medium",
+      "brief_description": "Access Upwork to read the communication from Quincy concerning project deliverables. Prepare and send a reply that clarifies expectations, addresses any questions, and confirms understanding of the next steps.",
+      "due_date": 1729219199000,
+      "status": "To Do"
+    }
+  },
+  {
+    "id": "4aa1e355-4e60-4e09-8eb9-f5d0a41b035c",
+    "transcript_title": "Ops meeting",
+    "task_item": "Reply to Quincy's message in Upwork, specifically addressing the project style requirements to ensure clear communication and alignment.",
+    "assignee": "Levi Rybalov",
+    "priority": "medium",
+    "due_date": "2024-10-18",
+    "description": "Respond to Quincy's inquiry on Upwork, providing necessary details or clarifications concerning the desired style guidelines for the project. Clear communication here will help set the correct direction for deliverables.",
+    "status": "pending",
+    "extraction_metadata": {
+      "task_item": "Reply to Quincy's message in Upwork, specifically addressing the project style requirements to ensure clear communication and alignment.",
+      "assignee_emails": "levi@coophive.network",
+      "assignee(s)_full_names": "Levi Rybalov",
+      "priority": "Medium",
+      "brief_description": "Respond to Quincy's inquiry on Upwork, providing necessary details or clarifications concerning the desired style guidelines for the project. Clear communication here will help set the correct direction for deliverables.",
+      "due_date": 1729219199000,
+      "status": "To Do"
+    }
+  },
+  {
+    "id": "cc0d3294-87fb-4bd7-8100-c21070a5ddbe",
+    "transcript_title": "Ops meeting",
+    "task_item": "Schedule a follow-up meeting to discuss the Twitter integration strategy, specifically after the successful completion of the Monday.com system.",
+    "assignee": "Levi Rybalov",
+    "priority": "medium",
+    "due_date": null,
+    "description": "Arrange a dedicated meeting to strategize the implementation of Twitter integration. This meeting should be planned to occur once the Monday.com system is fully operational, ensuring a structured development roadmap.",
+    "status": "pending",
+    "extraction_metadata": {
+      "task_item": "Schedule a follow-up meeting to discuss the Twitter integration strategy, specifically after the successful completion of the Monday.com system.",
+      "assignee_emails": "levi@coophive.network",
+      "assignee(s)_full_names": "Levi Rybalov",
+      "priority": "Medium",
+      "brief_description": "Arrange a dedicated meeting to strategize the implementation of Twitter integration. This meeting should be planned to occur once the Monday.com system is fully operational, ensuring a structured development roadmap.",
+      "due_date": null,
+      "status": "To Do"
+    }
+  },
+  {
+    "id": "3313ce92-a193-4bb0-aca8-93b144f6d9fe",
+    "transcript_title": "Vardhan <> Levi",
+    "task_item": "Whitelist Levi's specific co-op hive email address and then redeploy the application to implement this new whitelist functionality for immediate access.",
+    "assignee": "Vardhan Shorewala",
+    "priority": "high",
+    "due_date": "2024-06-18",
+    "description": "Implement whitelisting for Levi's co-op hive email address by updating the application's configuration and then redeploying the entire system to ensure immediate access, which is crucial for upcoming testing and product demonstration.",
+    "status": "pending",
+    "extraction_metadata": {
+      "task_item": "Whitelist Levi's specific co-op hive email address and then redeploy the application to implement this new whitelist functionality for immediate access.",
+      "assignee_emails": "vardhan@coophive.network",
+      "assignee(s)_full_names": "Vardhan Shorewala",
+      "priority": "High",
+      "brief_description": "Implement whitelisting for Levi's co-op hive email address by updating the application's configuration and then redeploying the entire system to ensure immediate access, which is crucial for upcoming testing and product demonstration.",
+      "due_date": 1718678399000,
+      "status": "To Do"
+    }
+  },
+  {
+    "id": "6a7e214b-df27-478e-9891-bdc287e3e816",
+    "transcript_title": "Vardhan <> Levi",
+    "task_item": "Refactor the whitelist functionality by migrating it from the frontend to the backend and establishing a new API endpoint, secured with an API key, to facilitate easier and more efficient email management.",
+    "assignee": "Vardhan Shorewala",
+    "priority": "medium",
+    "due_date": "2024-06-19",
+    "description": "Enhance the application's whitelist system by relocating its logic from the frontend to the backend. This involves creating a dedicated API endpoint protected by an API key, allowing for more streamlined and secure management of whitelisted email addresses.",
+    "status": "pending",
+    "extraction_metadata": {
+      "task_item": "Refactor the whitelist functionality by migrating it from the frontend to the backend and establishing a new API endpoint, secured with an API key, to facilitate easier and more efficient email management.",
+      "assignee_emails": "vardhan@coophive.network",
+      "assignee(s)_full_names": "Vardhan Shorewala",
+      "priority": "Medium",
+      "brief_description": "Enhance the application's whitelist system by relocating its logic from the frontend to the backend. This involves creating a dedicated API endpoint protected by an API key, allowing for more streamlined and secure management of whitelisted email addresses.",
+      "due_date": 1718764799000,
+      "status": "To Do"
+    }
+  },
+  {
+    "id": "a7a5bb7a-ceec-4147-9bce-52976f9136f2",
+    "transcript_title": "Vardhan <> Levi",
+    "task_item": "Identify and contact at least one suitable candidate for a potential part-time hiring role by the end of the current week to help with automated tasks.",
+    "assignee": "Vardhan Shorewala",
+    "priority": "medium",
+    "due_date": "2024-06-21",
+    "description": "Initiate the recruitment process by reaching out to a single promising individual by week's end. The goal is to explore their interest in a part-time position, particularly for handling automated tasks, which will significantly contribute to expanding team capacity.",
+    "status": "pending",
+    "extraction_metadata": {
+      "task_item": "Identify and contact at least one suitable candidate for a potential part-time hiring role by the end of the current week to help with automated tasks.",
+      "assignee_emails": "vardhan@coophive.network",
+      "assignee(s)_full_names": "Vardhan Shorewala",
+      "priority": "Medium",
+      "brief_description": "Initiate the recruitment process by reaching out to a single promising individual by week's end. The goal is to explore their interest in a part-time position, particularly for handling automated tasks, which will significantly contribute to expanding team capacity.",
+      "due_date": 1718937599000,
+      "status": "To Do"
+    }
+  },
+  {
+    "id": "55d58746-a3c6-4a00-8c47-07a0bad32f93",
+    "transcript_title": "Vardhan <> Levi",
+    "task_item": "Promptly respond to Edward's message in the Discord group chat and coordinate a suitable meeting time, considering Edward's location in Europe.",
+    "assignee": "Vardhan Shorewala",
+    "priority": "medium",
+    "due_date": null,
+    "description": "Promptly reply to Edward in the Discord group chat to acknowledge his message. Coordinate and set up a suitable meeting time, ensuring to consider his time zone in Europe for optimal scheduling and effective communication.",
+    "status": "pending",
+    "extraction_metadata": {
+      "task_item": "Promptly respond to Edward's message in the Discord group chat and coordinate a suitable meeting time, considering Edward's location in Europe.",
+      "assignee_emails": "vardhan@coophive.network",
+      "assignee(s)_full_names": "Vardhan Shorewala",
+      "priority": "Medium",
+      "brief_description": "Promptly reply to Edward in the Discord group chat to acknowledge his message. Coordinate and set up a suitable meeting time, ensuring to consider his time zone in Europe for optimal scheduling and effective communication.",
+      "due_date": null,
+      "status": "To Do"
+    }
+  },
+  {
+    "id": "643d8d2b-6179-440f-a7f6-4067c47c1b24",
+    "transcript_title": "Vardhan <> Levi",
+    "task_item": "Dedicate at least two hours daily to the development of the OLAS prediction agent, ensuring its complete functionality from beginning to end by Thursday for accelerator application purposes.",
+    "assignee": "Vardhan Shorewala",
+    "priority": "high",
+    "due_date": "2024-06-20",
+    "description": "Commit a minimum of two hours daily to developing the OLAS prediction agent. The objective is to have the agent fully operational and capable of end-to-end functionality by Thursday, crucial for its inclusion in the accelerator application.",
+    "status": "pending",
+    "extraction_metadata": {
+      "task_item": "Dedicate at least two hours daily to the development of the OLAS prediction agent, ensuring its complete functionality from beginning to end by Thursday for accelerator application purposes.",
+      "assignee_emails": "vardhan@coophive.network",
+      "assignee(s)_full_names": "Vardhan Shorewala",
+      "priority": "High",
+      "brief_description": "Commit a minimum of two hours daily to developing the OLAS prediction agent. The objective is to have the agent fully operational and capable of end-to-end functionality by Thursday, crucial for its inclusion in the accelerator application.",
+      "due_date": 1718851199000,
+      "status": "To Do"
+    }
+  },
+  {
+    "id": "771be453-3bd6-4b7d-b121-23f8643492e7",
+    "transcript_title": "Vardhan <> Levi",
+    "task_item": "Integrate the scraping functionality into the application this week, enabling automatic paper searching and addition for users.",
+    "assignee": "Vardhan Shorewala",
+    "priority": "medium",
+    "due_date": "2024-06-21",
+    "description": "Implement the scraping functionality within the application during the current week to enhance its capabilities. This will enable users to automatically search for and add papers, streamlining content acquisition and improving overall user experience.",
+    "status": "pending",
+    "extraction_metadata": {
+      "task_item": "Integrate the scraping functionality into the application this week, enabling automatic paper searching and addition for users.",
+      "assignee_emails": "vardhan@coophive.network",
+      "assignee(s)_full_names": "Vardhan Shorewala",
+      "priority": "Medium",
+      "brief_description": "Implement the scraping functionality within the application during the current week to enhance its capabilities. This will enable users to automatically search for and add papers, streamlining content acquisition and improving overall user experience.",
+      "due_date": 1718937599000,
+      "status": "To Do"
+    }
+  },
+  {
+    "id": "9450f4c7-c095-4500-bd30-e9af623169e8",
+    "transcript_title": "Vardhan <> Levi",
+    "task_item": "Send Levi the application link along with recommendations for optimal usage methods by tonight, specifically advising against methods that overload the server.",
+    "assignee": "Vardhan Shorewala",
+    "priority": "high",
+    "due_date": "2024-06-18",
+    "description": "Provide Levi with the application access link by tonight. Include specific recommendations regarding optimal usage methods and important guidance on which processes to avoid, thereby preventing server overload and ensuring smooth performance during testing.",
+    "status": "pending",
+    "extraction_metadata": {
+      "task_item": "Send Levi the application link along with recommendations for optimal usage methods by tonight, specifically advising against methods that overload the server.",
+      "assignee_emails": "vardhan@coophive.network",
+      "assignee(s)_full_names": "Vardhan Shorewala",
+      "priority": "High",
+      "brief_description": "Provide Levi with the application access link by tonight. Include specific recommendations regarding optimal usage methods and important guidance on which processes to avoid, thereby preventing server overload and ensuring smooth performance during testing.",
+      "due_date": 1718678399000,
+      "status": "To Do"
+    }
+  },
+  {
+    "id": "8008495a-7353-4feb-a95e-8be04ad79e50",
+    "transcript_title": "Vardhan <> Levi",
+    "task_item": "Upload five to ten relevant papers to a Google Drive account prior to the demo for effective testing of the application's capabilities.",
+    "assignee": "Levi Rybalov",
+    "priority": "high",
+    "due_date": "2024-06-19",
+    "description": "Prepare for the upcoming demo by uploading a collection of five to ten relevant papers to Google Drive. These documents are essential testing material to thoroughly evaluate the application's functionality and ensure a successful demonstration.",
+    "status": "pending",
+    "extraction_metadata": {
+      "task_item": "Upload five to ten relevant papers to a Google Drive account prior to the demo for effective testing of the application's capabilities.",
+      "assignee_emails": "levi@coophive.network",
+      "assignee(s)_full_names": "Levi Rybalov",
+      "priority": "High",
+      "brief_description": "Prepare for the upcoming demo by uploading a collection of five to ten relevant papers to Google Drive. These documents are essential testing material to thoroughly evaluate the application's functionality and ensure a successful demonstration.",
+      "due_date": 1718764799000,
+      "status": "To Do"
+    }
+  }
+]

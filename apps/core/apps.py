@@ -4,11 +4,11 @@ from django.apps import AppConfig
 class CoreConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'apps.core'
-    verbose_name = 'Core System'
+    verbose_name = 'Core System (Lean)'
     
     def ready(self):
         """Initialize core components when Django starts"""
-        # Import signal handlers
+        # Import signal handlers for lean models
         from . import signals
         
         # Initialize Guardian integration
@@ -29,8 +29,10 @@ class CoreConfig(AppConfig):
     def start_core_components(self):
         """Start core system components"""
         try:
-            from .tasks import start_background_monitoring
-            start_background_monitoring.delay()
+            # TODO: Use lean pipeline after migration is complete
+            # from .lean_pipeline import LeanPipeline
+            # Initialize lean pipeline for background tasks
+            pass
         except ImportError:
             # Celery might not be available during migrations
             pass 

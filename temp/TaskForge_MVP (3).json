@@ -1,0 +1,241 @@
+{
+  "name": "TaskForge MVP",
+  "nodes": [
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-preview-04-17-thinking",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -180,
+        240
+      ],
+      "id": "250c8b9f-ed53-4320-8084-54ea209fdd4b",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "BG7uwd401qrjRAp3",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.fireflies.ai/graphql",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 3482aac6-8fc3-4109-9ff9-31fef2a458eb"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"query\": \"query ListTranscripts($mine: Boolean!, $limit: Int!) {\\n  transcripts(mine: $mine, limit: $limit) {\\n    id\\n    title\\n    date\\n    duration\\n    transcript_url\\n    meeting_link\\n    organizer_email\\n    host_email\\n    meeting_info {\\n      silent_meeting\\n      fred_joined\\n      summary_status\\n    }\\n    summary {\\n      overview\\n      outline\\n      action_items\\n      keywords\\n      topics_discussed\\n      shorthand_bullet\\n      bullet_gist\\n      gist\\n      short_summary\\n      short_overview\\n      meeting_type\\n    }\\n    sentences {\\n      index\\n      speaker_id\\n      speaker_name\\n      raw_text\\n      text\\n      start_time\\n      end_time\\n      ai_filters {\\n        task\\n        pricing\\n        metric\\n        question\\n        date_and_time\\n        sentiment\\n      }\\n    }\\n    meeting_attendees {\\n      displayName\\n      email\\n      location\\n    }\\n  }\\n}\",\n  \"variables\": {\n    \"mine\": false,\n    \"limit\": 5\n  }\n}\n",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          },
+          "timeout": 120000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -720,
+        60
+      ],
+      "id": "a95179ca-0f53-46f8-8573-1c95142d15ee",
+      "name": "HTTP Request1 - Asks for the last meeting transcribed",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "jnOCmiANX9SRnmvz",
+          "name": "FireFlies API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=\n=== System ===\nYou are TaskForge, an expert AI assistant. Your sole purpose is to meticulously extract discrete to-do items from meeting data.\nYou MUST output only a JSON array of task objects. Do not include any introductory text, markdown, backticks, or commentary outside the JSON array.\n\nEach task object in the array **MUST** have exactly these fields:\n- task_item (string)\n- assignee_emails (string)\n- assignee(s)_full_names (string) e.g. Joe Maina or Andrew Hero, John Doe\n- priority (string: \"High\", \"Medium\", or \"Low\")\n- brief_description (string)\n\n**Additional Requirements:**\n1. **Multi-Assignee Detection:**  \n   - If an action item clearly involves more than one person (e.g., “Alice and Bob will…”), include all their emails in `assignee_emails` (comma-separated) and all their names in `assignee(s)_full_names`.  \n2. **Account Deduplication:**  \n   - If a participant appears under multiple accounts (invitee vs. speaker), choose one canonical name/email mapping and do not repeat them.  \n3. **Verbatim Task Text:**  \n   - `task_item` and `brief_description` must match the transcript’s wording exactly (aside from minimal grammar adjustments). Cite the speaker and timestamp in parentheses after each task description. Avoid any purely generative re-phrasing except to correct grammar or to meet word-count limits.\n\nIf a field is unknown *after* inference, make an educated guess from meeting data. Otherwise, infer:\n\n1. **Primary source**: The “Explicitly Listed Action Items” list.  \n2. **Assignee inference**:  \n   - Scan the Full Transcript for patterns like “X will…,” “Let’s have X…,” or “Can you X…?”  \n   - Map X’s first or last name to the Attendees list (displayName → email).  \n   - If a match is found, fill `assignee_emails` accordingly; only use null if no name match appears anywhere.  \n   - Normally, the host issues tasks to the attendees.  \n3. **Due-date inference**:  \n   - Look for explicit dates (“May 16,” “next Friday,” “by EOD tomorrow,” “within a week”).  \n   - Convert to a millisecond timestamp in UTC.  \n   - If the transcript uses relative terms (“ASAP,” “this week,” “after the meeting,” “next week”), make a reasonable inferred date (e.g., tomorrow for “ASAP,” start of next week for “next week,” end of today for “after the meeting”).  \n4. **Priority inference**:  \n   - Urgent or time-bound tasks ⇒ “High.”  \n   - Strategic or multi-day tasks ⇒ “Medium.”  \n   - Informational or low-stakes tasks ⇒ “Low.”  \n5. **Status inference**:  \n   - Acceptable tags: \"To Do\", \"Stuck\", \"Working on it\", \"Waiting for review\", \"Approved\", \"Done\".  \n   - Use transcript cues (“we’ve already done X” ⇒ “Done”; “I’m working on X” ⇒ “Working on it”).  \n   - Default to “To Do” only if no other status is indicated.  \n6. **Brief description**:  \n   - Must be at least 30 words and maximum 50 words.  \n   - Must expand on the `task_item` with context (why the task exists, how it will be done, with whom), explicitly stating **who assigned** the task and **to whom** it was given.  \n   - Should infer and include any timeline cues (e.g., “next week,” “after the meeting,” “by end of day tomorrow”) in natural phrasing.  \n7. **Count consistency**:  \n   - Output as many tasks as there are explicit ({{ $json.summary.action_items }} ± 2).  \n   - Only add truly new tasks found in transcript if they’re critical and non-duplicate.\n\nIf no tasks are identifiable, return `[]`.\n\n=== User ===\nProcess only the following meeting data to extract tasks:\n\nMeeting Title: {{$node[\"Code2 - JS to deconstruct the JSON Header\"].json.title}}  \nMeeting Date (ms): {{$node[\"Code2 - JS to deconstruct the JSON Header\"].json.date}}  \nOrganizer Email: {{$node[\"Code2 - JS to deconstruct the JSON Header\"].json.organizer_email}}  \n\nAttendees ( name ↔ email):  \n{{$node[\"Code2 - JS to deconstruct the JSON Header\"].json.meeting_attendees.map(a => `- ${a.displayName} <${a.email}>`).join(\"\\n\")}}{{ $('HTTP Request1 - Asks for the last meeting transcribed').item.json.data.transcripts[0].meeting_attendees }}\n\nExplicitly Listed Action Items:  \n{{ $json.summary.action_items }}\n\nMeeting Overview:  \n{{$node[\"Code2 - JS to deconstruct the JSON Header\"].json.summary.overview}}\n\nFull Transcript:  \n{{$node[\"Code2 - JS to deconstruct the JSON Header\"].json.sentences.map(s => `${s.speaker_name}: ${s.text}`).join(\"\\n\")}}\n\nReturn ONLY a JSON array of tasks as described above.\n\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        -80,
+        0
+      ],
+      "id": "d2941b1d-69a2-43ce-99e8-5bbd81dcd76e",
+      "name": "AI Agent - Connecting the dots/ reconfirms Fireflies Action Items"
+    },
+    {
+      "parameters": {
+        "resource": "boardItem",
+        "boardId": "8732979496",
+        "groupId": "group_mkqyryrz",
+        "name": "={{ $json.task_item }}",
+        "additionalFields": {
+          "columnValues": "={{\n  JSON.stringify({\n    \"text_mkr7jgkp\": $json[\"assignee(s)_full_names\"],\n    \"text_mkr0hqsb\": $json.assignee_emails ,\n    \"status_1\":      $json.priority,\n    \"long_text\":     $json.brief_description\n  })\n}}\n\n\n\n"
+        }
+      },
+      "type": "n8n-nodes-base.mondayCom",
+      "typeVersion": 1,
+      "position": [
+        680,
+        60
+      ],
+      "id": "9dc451c1-86e4-4749-8620-877941f1dcec",
+      "name": "Monday.com - Sends tasks to a given group on Monday",
+      "credentials": {
+        "mondayComApi": {
+          "id": "XW4GJAhez8mYAquT",
+          "name": "Monday.com account 2 - COOPHIVE"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Function node: Code (Parse AI Output)\n// EXPECTS TO RUN \"ONCE FOR ALL ITEMS\"\n// `items` will be an array of all AI outputs, e.g., items = [ {json: {output: \"...\"}}, {json: {output: \"...\"}} ]\n\nconst allExtractedTasks = [];\n\nfor (const currentItem of items) { // Loop through each AI output item in the input array\n  if (!currentItem.json || typeof currentItem.json.output !== 'string') {\n    console.warn(\"An input item to 'Code (Parse AI Output)' is not in the expected format (currentItem.json.output is not a string). Skipping this item.\", currentItem);\n    continue; // Skip to the next item\n  }\n\n  const fencedOutput = currentItem.json.output;\n  let cleanedJsonText = fencedOutput;\n\n  if (cleanedJsonText.startsWith(\"```json\")) {\n    cleanedJsonText = cleanedJsonText.substring(7);\n  } else if (cleanedJsonText.startsWith(\"```\")) {\n    cleanedJsonText = cleanedJsonText.substring(3);\n  }\n  if (cleanedJsonText.endsWith(\"```\")) {\n    cleanedJsonText = cleanedJsonText.substring(0, cleanedJsonText.length - 3);\n  }\n  cleanedJsonText = cleanedJsonText.trim();\n\n  let tasksInThisMeeting;\n  try {\n    tasksInThisMeeting = JSON.parse(cleanedJsonText);\n    if (!Array.isArray(tasksInThisMeeting)) {\n      if (tasksInThisMeeting && typeof tasksInThisMeeting === 'object') {\n        console.warn(\"Parsed AI output for an item was a single object, not an array. Wrapping it. Original cleaned text:\", cleanedJsonText);\n        tasksInThisMeeting = [tasksInThisMeeting];\n      } else {\n        console.error(\"Parsed AI output for an item after cleaning is not a valid JSON array or a single task object. Content:\", cleanedJsonText, \"Parsed as:\", tasksInThisMeeting);\n        // Optionally, collect error info for this item if needed, but don't let it stop others\n        allExtractedTasks.push({ json: { error: \"Parsed AI output for an item is not valid.\", a_cleaned_json_text_from_ai: cleanedJsonText, z_original_ai_output: fencedOutput } });\n        continue; // Skip to next item\n      }\n    }\n  } catch (error) {\n    console.error(`Failed to parse AI output for an item. Error: ${error.message}. Cleaned text was: \"${cleanedJsonText}\". Original AI output was: \"${fencedOutput}\"`);\n    allExtractedTasks.push({ json: { error: `Failed to parse AI output for an item: ${error.message}`, a_cleaned_json_text_from_ai: cleanedJsonText, z_original_ai_output: fencedOutput } });\n    continue; // Skip to next item\n  }\n\n  // Add the successfully parsed tasks from this meeting to the main list\n  tasksInThisMeeting.forEach(task => {\n    allExtractedTasks.push({ json: task });\n  });\n}\n\n// Return all tasks collected from all input items\nreturn allExtractedTasks;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        360,
+        60
+      ],
+      "id": "7bff0be9-9568-4c88-b1c0-1735fdc936dd",
+      "name": "Code1 - JS Disintegrates LLM output into monday taks"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Function node – \"Run Once for All Items\" (JavaScript)\n// Takes Fireflies API response and outputs one consolidated JSON object per meeting,\n// including a descriptive filename.\n\nconst consolidatedMeetings = [];\n\n// Helper function to sanitize text for filenames\nfunction sanitizeFilename(text) {\n  if (!text) return '';\n  let sanitized = text.replace(/[\\/\\\\:*\"<>|?]/g, '_'); // Common problematic characters\n  sanitized = sanitized.replace(/\\s+/g, '_'); // Replace spaces with underscores\n  sanitized = sanitized.replace(/_+/g, '_');    // Replace multiple underscores with a single one\n  sanitized = sanitized.replace(/^_+|_+$/g, ''); // Trim leading/trailing underscores\n  return sanitized.substring(0, 100); // Limit length\n}\n\nfor (const response of $input.all()) {\n  const transcripts = response.json.data?.transcripts || [];\n\n  for (const t of transcripts) { // t is one transcript object from Fireflies API\n    \n    let datePart = 'nodate';\n    if (t.date) {\n      try {\n        const meetingDate = new Date(t.date);\n        const year = meetingDate.getFullYear();\n        const month = (meetingDate.getMonth() + 1).toString().padStart(2, '0');\n        const day = meetingDate.getDate().toString().padStart(2, '0');\n        datePart = `${year}-${month}-${day}`;\n      } catch (e) {\n        datePart = 'nodate';\n      }\n    }\n\n    const sanitizedTitle = sanitizeFilename(t.title || 'UntitledMeeting');\n    \n    let participantPart = 'noparticipant';\n    const emailUser = (email) => email ? email.split('@')[0] : '';\n    const organizerPrefix = emailUser(t.organizer_email);\n    const hostPrefix = emailUser(t.host_email);\n    \n    if (organizerPrefix) {\n      participantPart = sanitizeFilename(organizerPrefix);\n    } else if (hostPrefix) {\n      participantPart = sanitizeFilename(hostPrefix);\n    }\n\n    const transcriptId = t.id || 'no_id';\n    const descriptiveFilename = `${datePart}_${sanitizedTitle}_${participantPart}_${transcriptId}.json`;\n\n    const meetingData = {\n      filename: descriptiveFilename,\n      original_fireflies_id: transcriptId,\n      id: t.id,\n      title: t.title,\n      date: t.date,\n      duration: t.duration,\n      transcript_url: t.transcript_url,\n      audio_url: t.audio_url,\n      video_url: t.video_url,\n      meeting_link: t.meeting_link,\n      organizer_email: t.organizer_email,\n      host_email: t.host_email,\n      meeting_info: t.meeting_info ? {\n        silent_meeting: t.meeting_info.silent_meeting ?? null,\n        fred_joined: t.meeting_info.fred_joined ?? null,\n        summary_status: t.meeting_info.summary_status ?? null,\n      } : null,\n      summary: t.summary ? {\n        overview: t.summary.overview ?? null,\n        outline: t.summary.outline ?? null,\n        action_items: t.summary.action_items || [],\n        keywords: t.summary.keywords || [],\n        topics_discussed: t.summary.topics_discussed || [],\n        shorthand_bullet: t.summary.shorthand_bullet ?? null,\n        bullet_gist: t.summary.bullet_gist ?? null,\n        gist: t.summary.gist ?? null,\n        short_summary: t.summary.short_summary ?? null,\n        short_overview: t.summary.short_overview ?? null,\n        meeting_type: t.summary.meeting_type ?? null,\n      } : null,\n      sentences: (t.sentences || []).map(s => ({\n        index: s.index,\n        speaker_id: s.speaker_id,\n        speaker_name: s.speaker_name,\n        raw_text: s.raw_text,\n        text: s.text,\n        start_time: s.start_time,\n        end_time: s.end_time,\n        ai_filters: s.ai_filters ? {\n            task: s.ai_filters.task ?? null,\n            pricing: s.ai_filters.pricing ?? null,\n            metric: s.ai_filters.metric ?? null,\n            question: s.ai_filters.question ?? null,\n            date_and_time: s.ai_filters.date_and_time ?? null,\n            sentiment: s.ai_filters.sentiment ?? null,\n        } : {}, // Ensure ai_filters is an object even if null from source\n      })),\n      analytics: t.analytics ? {\n        sentiments: t.analytics.sentiments ? {\n          positive_pct: t.analytics.sentiments.positive_pct ?? null,\n          neutral_pct: t.analytics.sentiments.neutral_pct ?? null,\n          negative_pct: t.analytics.sentiments.negative_pct ?? null,\n        } : null,\n        categories: t.analytics.categories ? {\n          tasks: t.analytics.categories.tasks ?? null,\n          questions: t.analytics.categories.questions ?? null,\n          metrics: t.analytics.categories.metrics ?? null,\n          date_times: t.analytics.categories.date_times ?? null,\n        } : null,\n      } : null,\n      speakers: (t.speakers || []).map(sp => ({ // From Fireflies API t.analytics.speakers\n        speaker_id: sp.speaker_id,\n        name: sp.name,\n        duration: sp.duration,\n        word_count: sp.word_count,\n        filler_words: sp.filler_words,\n        questions: sp.questions,\n        monologues_count: sp.monologues_count,\n        duration_pct: sp.duration_pct,\n        words_per_minute: sp.words_per_minute,\n      })),\n      meeting_attendees: (t.meeting_attendees || []).map(a => ({\n        displayName: a.displayName ?? null,\n        email: a.email ?? null,\n        location: a.location ?? null,\n      })),\n    };\n    \n    consolidatedMeetings.push({ json: meetingData });\n  }\n}\n\nreturn consolidatedMeetings;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -400,
+        60
+      ],
+      "id": "32cd46b8-c354-4bdf-a3c7-053af4efe094",
+      "name": "Code2 - JS to deconstruct the JSON Header"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 0 0 * * *"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1020,
+        60
+      ],
+      "id": "c25f177d-a805-4b36-8d86-c9c01f60fde8",
+      "name": "DAILY Schedule Trigger",
+      "notesInFlow": false
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent - Connecting the dots/ reconfirms Fireflies Action Items",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1 - Asks for the last meeting transcribed": {
+      "main": [
+        [
+          {
+            "node": "Code2 - JS to deconstruct the JSON Header",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent - Connecting the dots/ reconfirms Fireflies Action Items": {
+      "main": [
+        [
+          {
+            "node": "Code1 - JS Disintegrates LLM output into monday taks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Monday.com - Sends tasks to a given group on Monday": {
+      "main": [
+        []
+      ]
+    },
+    "Code1 - JS Disintegrates LLM output into monday taks": {
+      "main": [
+        [
+          {
+            "node": "Monday.com - Sends tasks to a given group on Monday",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2 - JS to deconstruct the JSON Header": {
+      "main": [
+        [
+          {
+            "node": "AI Agent - Connecting the dots/ reconfirms Fireflies Action Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DAILY Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1 - Asks for the last meeting transcribed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "7a82a013-6f7c-4390-b586-d4066138e97a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "cbf198a72a27a25f1630a1538d02a2e07f8d3d4c040dcf17ba6c4ad48a4c4f9c"
+  },
+  "id": "YQo5b977upNdpzyK",
+  "tags": []
+}

@@ -1,0 +1,112 @@
+[
+  {
+    "index": 1,
+    "raw_item": {
+      "task_item": "Research and understand the specific requirements for creating custom agents and the detailed process for deploying them on the Olas network.",
+      "assignee_emails": "vardhan@coophive.network",
+      "assignee(s)_full_names": "Vardhan Shorewala",
+      "priority": "High",
+      "brief_description": "Investigate the necessary steps and technical specifications to develop and launch custom agents on the Olas network, moving beyond pre-configured solutions.",
+      "due_date": 1750387199000,
+      "status": "To Do"
+    },
+    "monday_data": {
+      "name": "Research and understand the specific requirements for creating custom agents and the detailed process for deploying them on the Olas network.",
+      "column_values": {
+        "text_mkr7jgkp": "Investigate the necessary steps and technical specifications to develop and launch custom agents on the Olas network, moving beyond pre-configured solutions.",
+        "status_1": "High",
+        "status": "Not Started",
+        "long_text": "Assignee: Vardhan Shorewala\n\nTask: Research and understand the specific requirements for creating custom agents and the detailed process for deploying them on the Olas network.\n\nDescription: Investigate the necessary steps and technical specifications to develop and launch custom agents on the Olas network, moving beyond pre-configured solutions.",
+        "date_mkr7ymmh": "2025-06-20"
+      }
+    }
+  },
+  {
+    "index": 2,
+    "raw_item": {
+      "task_item": "Initiate the process of embedding all papers located in the first designated Google Drive folder today.",
+      "assignee_emails": "vardhan@coophive.network",
+      "assignee(s)_full_names": "Vardhan Shorewala",
+      "priority": "High",
+      "brief_description": "Begin the embedding process for documents from the first Google Drive folder, ensuring initial progress on data processing for the database demonstration.",
+      "due_date": 1750281599000,
+      "status": "To Do"
+    },
+    "monday_data": {
+      "name": "Initiate the process of embedding all papers located in the first designated Google Drive folder today.",
+      "column_values": {
+        "text_mkr7jgkp": "Begin the embedding process for documents from the first Google Drive folder, ensuring initial progress on data processing for the database demonstration.",
+        "status_1": "High",
+        "status": "Not Started",
+        "long_text": "Assignee: Vardhan Shorewala\n\nTask: Initiate the process of embedding all papers located in the first designated Google Drive folder today.\n\nDescription: Begin the embedding process for documents from the first Google Drive folder, ensuring initial progress on data processing for the database demonstration.",
+        "date_mkr7ymmh": "2025-06-18"
+      }
+    }
+  },
+  {
+    "index": 3,
+    "raw_item": {
+      "task_item": "Configure and set up eight distinct databases following a 2x2x2 configuration to enable comprehensive and varied testing of the system's capabilities.",
+      "assignee_emails": "vardhan@coophive.network",
+      "assignee(s)_full_names": "Vardhan Shorewala",
+      "priority": "Medium",
+      "brief_description": "Design and implement eight unique databases to showcase the system's versatility and performance across different configurations, fulfilling Levi's request for comprehensive testing.",
+      "due_date": null,
+      "status": "To Do"
+    },
+    "monday_data": {
+      "name": "Configure and set up eight distinct databases following a 2x2x2 configuration to enable comprehensive and varied testing of the system's capabilities.",
+      "column_values": {
+        "text_mkr7jgkp": "Design and implement eight unique databases to showcase the system's versatility and performance across different configurations, fulfilling Levi's request for comprehensive testing.",
+        "status_1": "Medium",
+        "status": "Not Started",
+        "long_text": "Assignee: Vardhan Shorewala\n\nTask: Configure and set up eight distinct databases following a 2x2x2 configuration to enable comprehensive and varied testing of the system's capabilities.\n\nDescription: Design and implement eight unique databases to showcase the system's versatility and performance across different configurations, fulfilling Levi's request for comprehensive testing.",
+        "date_mkr7ymmh": null
+      }
+    }
+  },
+  {
+    "index": 4,
+    "raw_item": {
+      "task_item": "Integrate and implement web scraping capabilities into the platform to allow for automated extraction of information from websites.",
+      "assignee_emails": "vardhan@coophive.network",
+      "assignee(s)_full_names": "Vardhan Shorewala",
+      "priority": "Medium",
+      "brief_description": "Develop and incorporate comprehensive web scraping features into the existing platform architecture to enhance its data acquisition and processing abilities for future use.",
+      "due_date": null,
+      "status": "To Do"
+    },
+    "monday_data": {
+      "name": "Integrate and implement web scraping capabilities into the platform to allow for automated extraction of information from websites.",
+      "column_values": {
+        "text_mkr7jgkp": "Develop and incorporate comprehensive web scraping features into the existing platform architecture to enhance its data acquisition and processing abilities for future use.",
+        "status_1": "Medium",
+        "status": "Not Started",
+        "long_text": "Assignee: Vardhan Shorewala\n\nTask: Integrate and implement web scraping capabilities into the platform to allow for automated extraction of information from websites.\n\nDescription: Develop and incorporate comprehensive web scraping features into the existing platform architecture to enhance its data acquisition and processing abilities for future use.",
+        "date_mkr7ymmh": null
+      }
+    }
+  },
+  {
+    "index": 5,
+    "raw_item": {
+      "task_item": "Identify and select at least one qualified developer candidate suitable for the automated scientist project by the conclusion of the current week.",
+      "assignee_emails": "vardhan@coophive.network",
+      "assignee(s)_full_names": "Vardhan Shorewala",
+      "priority": "High",
+      "brief_description": "Search for and interview potential candidates to hire for the automated scientist role, leveraging newly approved funding to fill this critical position by the deadline.",
+      "due_date": 1750281599000,
+      "status": "To Do"
+    },
+    "monday_data": {
+      "name": "Identify and select at least one qualified developer candidate suitable for the automated scientist project by the conclusion of the current week.",
+      "column_values": {
+        "text_mkr7jgkp": "Search for and interview potential candidates to hire for the automated scientist role, leveraging newly approved funding to fill this critical position by the deadline.",
+        "status_1": "High",
+        "status": "Not Started",
+        "long_text": "Assignee: Vardhan Shorewala\n\nTask: Identify and select at least one qualified developer candidate suitable for the automated scientist project by the conclusion of the current week.\n\nDescription: Search for and interview potential candidates to hire for the automated scientist role, leveraging newly approved funding to fill this critical position by the deadline.",
+        "date_mkr7ymmh": "2025-06-18"
+      }
+    }
+  }
+]

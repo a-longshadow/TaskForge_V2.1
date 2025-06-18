@@ -119,4 +119,8 @@ class CircuitBreakerRegistry:
         return {
             'total_breakers': len(self.circuit_breakers),
             'breakers': stats
-        } 
+        }
+    
+    def get_stats(self) -> Dict[str, Any]:
+        """Alias for get_all_stats for backward compatibility"""
+        return self.get_all_stats() 
