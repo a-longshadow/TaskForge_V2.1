@@ -11,6 +11,9 @@ from django.conf import settings
 from .health_monitor import get_system_health
 from .event_bus import EventBus
 from .circuit_breaker import CircuitBreakerRegistry
+from django.db import connection
+from django.core.cache import cache
+from django.utils import timezone
 
 logger = logging.getLogger('apps.core.views')
 
@@ -35,52 +38,34 @@ def home(request):
 
 @require_GET
 def health_check(request):
-    """
-    System health check endpoint
-    Returns comprehensive health status of all components
-    """
+    """Health check endpoint for Railway monitoring"""
     try:
-        # Get comprehensive health status
-        health_data = get_system_health()
+        # Test database connection
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT 1")
         
-        # Add additional system information
-        event_bus = EventBus.get_instance()
-        circuit_breaker_registry = CircuitBreakerRegistry.get_instance()
+        # Test cache
+        cache.set('health_check', 'ok', 30)
+        cache_status = cache.get('health_check') == 'ok'
         
-        health_data.update({
-            'event_bus': {
-                'initialized': event_bus.is_initialized,
-                'subscribers_count': len(event_bus.subscribers),
-                'queued_events': len(event_bus.event_queue),
-                'processed_events': len(event_bus.processed_events),
-            },
-            'circuit_breakers': circuit_breaker_registry.get_all_stats(),
-            'guardian': {
-                'enabled': getattr(settings, 'GUARDIAN_ENABLED', False),
-                'knowledge_dir_exists': getattr(settings, 'GUARDIAN_KNOWLEDGE_DIR', None) is not None,
-            },
-            'version': '2.1.0',
-            'phase': 'Phase 2 - Core Infrastructure'
+        # Check if we can import our models
+        from apps.core.models import GeminiProcessedTask
+        task_count = GeminiProcessedTask.objects.count()
+        
+        return JsonResponse({
+            'status': 'healthy',
+            'database': 'connected',
+            'cache': 'operational' if cache_status else 'error',
+            'tasks': task_count,
+            'timestamp': timezone.now().isoformat()
         })
         
-        # Determine HTTP status code based on health
-        if health_data['overall_status'] == 'healthy':
-            status_code = 200
-        elif health_data['overall_status'] == 'warning':
-            status_code = 200  # Still operational but with warnings
-        else:
-            status_code = 503  # Service unavailable
-        
-        return JsonResponse(health_data, status=status_code)
-        
     except Exception as e:
-        logger.error(f"Health check failed: {e}")
         return JsonResponse({
-            'overall_status': 'unhealthy',
-            'error': 'Health check system failure',
-            'message': str(e),
-            'timestamp': None
-        }, status=503)
+            'status': 'unhealthy',
+            'error': str(e),
+            'timestamp': timezone.now().isoformat()
+        }, status=500)
 
 
 @require_GET
