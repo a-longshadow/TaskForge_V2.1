@@ -22,6 +22,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy project
 COPY . .
 
+# Copy and make entrypoint executable
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
 # Create necessary directories
 RUN mkdir -p staticfiles logs cache
 
@@ -33,5 +37,5 @@ USER appuser
 # Expose port (Railway will set PORT dynamically)
 EXPOSE 8000
 
-# Shell form so $PORT expands properly
-CMD python manage.py migrate && python manage.py collectstatic --noinput && gunicorn taskforge.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120 
+# Use entrypoint to debug PORT variable
+ENTRYPOINT ["/app/entrypoint.sh"] 
