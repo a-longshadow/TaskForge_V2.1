@@ -37,5 +37,5 @@ USER appuser
 # Expose port (Railway will set PORT dynamically)
 EXPOSE 8000
 
-# Use entrypoint to debug PORT variable
+# Use entrypoint script for debugging
 ENTRYPOINT ["/app/entrypoint.sh"] 
