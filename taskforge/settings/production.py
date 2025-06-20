@@ -3,7 +3,14 @@ import os
 
 # Production settings
 DEBUG = False
-ALLOWED_HOSTS = ['*']  # Allow all hosts for Railway deployment testing
+
+# CRITICAL: Railway health checks come from healthcheck.railway.app
+ALLOWED_HOSTS = [
+    'healthcheck.railway.app',  # Railway health check hostname
+    '*.up.railway.app',         # Railway app domains
+    '*.railway.app',            # Railway domains
+    '*',                        # Allow all for testing (remove in production)
+]
 
 # Security settings for production - simplified for Railway
 SECRET_KEY = os.environ.get('SECRET_KEY', 'fallback-secret-key-for-testing')

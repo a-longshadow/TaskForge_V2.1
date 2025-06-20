@@ -388,3 +388,13 @@
   - M  taskforge/settings/base.py
   - M  taskforge/settings/production.py
 
+## 2025-06-20 18:30:40
+- **Command**: pre-commit
+- **Git Status**: bb58814
+- **Changes**: 
+  - M  .ai-knowledge/CHANGE_MANIFEST.md
+  - MM .ai-knowledge/PROJECT_STATE.md
+  - M  apps/core/views.py
+  - A  railway.json
+  - M  taskforge/settings/production.py
+
