@@ -38,34 +38,8 @@ def home(request):
 
 @require_GET
 def health_check(request):
-    """Health check endpoint for Railway monitoring"""
-    try:
-        # Test database connection
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT 1")
-        
-        # Test cache
-        cache.set('health_check', 'ok', 30)
-        cache_status = cache.get('health_check') == 'ok'
-        
-        # Check if we can import our models
-        from apps.core.models import GeminiProcessedTask
-        task_count = GeminiProcessedTask.objects.count()
-        
-        return JsonResponse({
-            'status': 'healthy',
-            'database': 'connected',
-            'cache': 'operational' if cache_status else 'error',
-            'tasks': task_count,
-            'timestamp': timezone.now().isoformat()
-        })
-        
-    except Exception as e:
-        return JsonResponse({
-            'status': 'unhealthy',
-            'error': str(e),
-            'timestamp': timezone.now().isoformat()
-        }, status=500)
+    """Simple health check endpoint for Railway monitoring"""
+    return HttpResponse("OK", status=200)
 
 
 @require_GET

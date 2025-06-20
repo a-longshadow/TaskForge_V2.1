@@ -3,16 +3,7 @@ import os
 
 # Production settings
 DEBUG = False
-ALLOWED_HOSTS = [
-    'taskforge-v2-1.onrender.com',
-    '.render.com',
-    'taskforge.com',
-    'www.taskforge.com',
-    '.railway.app',
-    '.up.railway.app',
-    'taskforge-web-production-d175.up.railway.app',
-    '*',  # Allow all hosts for Railway deployment
-]
+ALLOWED_HOSTS = ['*']  # Allow all hosts for Railway deployment testing
 
 # Security settings for production - simplified for Railway
 SECRET_KEY = config('SECRET_KEY')
