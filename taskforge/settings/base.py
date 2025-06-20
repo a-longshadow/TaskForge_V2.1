@@ -22,7 +22,17 @@ GUARDIAN_KNOWLEDGE_DIR = BASE_DIR / '.ai-knowledge'
 # Security
 SECRET_KEY = config('DJANGO_SECRET_KEY', default='django-insecure-your-secret-key-here')
 DEBUG = config('DEBUG', default=True, cast=bool)
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=lambda v: [s.strip() for s in v.split(',')])
+# ALLOWED_HOSTS - Following Railway tutorial approach
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'taskforge-web-production-d175.up.railway.app',  # Railway domain
+]
+
+# CSRF_TRUSTED_ORIGINS - Following Railway tutorial approach
+CSRF_TRUSTED_ORIGINS = [
+    'https://taskforge-web-production-d175.up.railway.app',  # Railway secure URL
+]
 
 # Django Apps
 DJANGO_APPS = [
@@ -82,20 +92,31 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'taskforge.wsgi.application'
 
-# Database - PostgreSQL for production readiness
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DATABASE_NAME', default='taskforge'),
-        'USER': config('DATABASE_USER', default='joe'),
-        'PASSWORD': config('DATABASE_PASSWORD', default=''),
-        'HOST': config('DATABASE_HOST', default='localhost'),
-        'PORT': config('DATABASE_PORT', default='5432'),
-        'OPTIONS': {
-            'connect_timeout': 20,
-        },
+# Database - Following Railway tutorial approach
+# Use DATABASE_URL when ENVIRONMENT=production or POSTGRES_LOCALLY=true
+if config('ENVIRONMENT', default='development') == 'production' or config('POSTGRES_LOCALLY', default=False, cast=bool):
+    import dj_database_url
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=config('DATABASE_URL'),
+            conn_max_age=600,
+        )
     }
-}
+else:
+    # Local development database
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': config('DATABASE_NAME', default='taskforge'),
+            'USER': config('DATABASE_USER', default='joe'),
+            'PASSWORD': config('DATABASE_PASSWORD', default=''),
+            'HOST': config('DATABASE_HOST', default='localhost'),
+            'PORT': config('DATABASE_PORT', default='5432'),
+            'OPTIONS': {
+                'connect_timeout': 20,
+            },
+        }
+    }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [

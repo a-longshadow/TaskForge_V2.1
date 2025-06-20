@@ -1,0 +1,1243 @@
+1
+00:00:01,460 --> 00:00:08,940
+[Music]
+
+2
+00:00:09,040 --> 00:00:11,480
+hello I'm Andreas chat your Tech curious
+
+3
+00:00:11,480 --> 00:00:14,120
+web designer in this video we will
+
+4
+00:00:14,120 --> 00:00:16,600
+explore how to deploy a Jango app with
+
+5
+00:00:16,600 --> 00:00:20,160
+postest database to railway so Railway
+
+6
+00:00:20,160 --> 00:00:22,880
+is a highly popular web hosting solution
+
+7
+00:00:22,880 --> 00:00:25,640
+especially in the python Community it
+
+8
+00:00:25,640 --> 00:00:27,679
+offers a userfriendly dashboard
+
+9
+00:00:27,679 --> 00:00:30,720
+interface is straightforward to set up
+
+10
+00:00:30,720 --> 00:00:33,000
+and although not free it offers a
+
+11
+00:00:33,000 --> 00:00:36,040
+lowbudget hobby plan let me give you
+
+12
+00:00:36,040 --> 00:00:38,520
+first a quick demo and after that we
+
+13
+00:00:38,520 --> 00:00:41,000
+jump straight into the code and deploy
+
+14
+00:00:41,000 --> 00:00:44,160
+our Jango app in easy to follow steps
+
+15
+00:00:44,160 --> 00:00:46,480
+let's
+
+16
+00:00:46,559 --> 00:00:49,680
+go so we can see here the homepage of
+
+17
+00:00:49,680 --> 00:00:52,160
+Railway and we can start a new project
+
+18
+00:00:52,160 --> 00:00:54,600
+by simply clicking this button here I
+
+19
+00:00:54,600 --> 00:00:56,199
+can show you how the interface of a
+
+20
+00:00:56,199 --> 00:00:58,399
+running application looks like so let's
+
+21
+00:00:58,399 --> 00:01:00,600
+go inside
+
+22
+00:01:00,600 --> 00:01:02,760
+this is my workspace here at the moment
+
+23
+00:01:02,760 --> 00:01:05,199
+I have only one project the awesome
+
+24
+00:01:05,199 --> 00:01:08,439
+project let's check it
+
+25
+00:01:08,720 --> 00:01:11,640
+out now we're inside a project in a
+
+26
+00:01:11,640 --> 00:01:13,880
+production environment and I set here up
+
+27
+00:01:13,880 --> 00:01:16,799
+two Services a web application connected
+
+28
+00:01:16,799 --> 00:01:19,040
+to a GitHub repository with the name
+
+29
+00:01:19,040 --> 00:01:21,720
+Railway and a postest
+
+30
+00:01:21,720 --> 00:01:24,000
+database unique here is that this
+
+31
+00:01:24,000 --> 00:01:26,200
+interface is like a big canvas we can
+
+32
+00:01:26,200 --> 00:01:27,600
+move it
+
+33
+00:01:27,600 --> 00:01:30,320
+around and add more components if you
+
+34
+00:01:30,320 --> 00:01:33,560
+like let's check out now our web
+
+35
+00:01:33,560 --> 00:01:37,040
+application we have a panel popup here
+
+36
+00:01:37,040 --> 00:01:40,479
+we can see a history of our
+
+37
+00:01:40,479 --> 00:01:42,960
+deployments then under variables we have
+
+38
+00:01:42,960 --> 00:01:45,079
+our environment
+
+39
+00:01:45,079 --> 00:01:48,079
+variables
+
+40
+00:01:48,320 --> 00:01:51,360
+metric and under settings we can for
+
+41
+00:01:51,360 --> 00:01:54,479
+example create our domain and other
+
+42
+00:01:54,479 --> 00:01:56,840
+custom
+
+43
+00:01:56,960 --> 00:01:59,960
+domain all right that was a quick demo
+
+44
+00:01:59,960 --> 00:02:01,840
+let me give you a quick overview now of
+
+45
+00:02:01,840 --> 00:02:05,320
+the steps we will take in this
+
+46
+00:02:06,439 --> 00:02:08,720
+tutorial so first we will make the
+
+47
+00:02:08,720 --> 00:02:11,040
+database connection and migrate the
+
+48
+00:02:11,040 --> 00:02:13,760
+tables the second step is to make the
+
+49
+00:02:13,760 --> 00:02:15,959
+connection to our GitHub
+
+50
+00:02:15,959 --> 00:02:18,480
+repository third step is to add the
+
+51
+00:02:18,480 --> 00:02:21,599
+environment variables to our web service
+
+52
+00:02:21,599 --> 00:02:24,360
+fourth step is to set up the allowed
+
+53
+00:02:24,360 --> 00:02:27,280
+hosts fifth step is to configure The
+
+54
+00:02:27,280 --> 00:02:30,680
+csrf Trusted Origins
+
+55
+00:02:30,680 --> 00:02:33,040
+six step is to create a proc file which
+
+56
+00:02:33,040 --> 00:02:35,120
+contains the start command and the
+
+57
+00:02:35,120 --> 00:02:37,680
+runtime. txt file which declares the
+
+58
+00:02:37,680 --> 00:02:40,239
+python version these two files are not
+
+59
+00:02:40,239 --> 00:02:42,720
+required on Railway but
+
+60
+00:02:42,720 --> 00:02:45,120
+recommended seventh step is to deploy
+
+61
+00:02:45,120 --> 00:02:47,200
+the application and if this is
+
+62
+00:02:47,200 --> 00:02:49,640
+successful we will as final step test
+
+63
+00:02:49,640 --> 00:02:51,800
+the website
+
+64
+00:02:51,800 --> 00:02:54,239
+online I want to mention also some
+
+65
+00:02:54,239 --> 00:02:56,239
+prerequisites which I will not go
+
+66
+00:02:56,239 --> 00:02:59,000
+through in this tutorial and these are
+
+67
+00:02:59,000 --> 00:03:01,200
+how to set up the EnV file and the
+
+68
+00:03:01,200 --> 00:03:04,080
+environment variables how to set up a
+
+69
+00:03:04,080 --> 00:03:06,760
+requirements.txt file which has to
+
+70
+00:03:06,760 --> 00:03:10,080
+include packages like gunicorn this is
+
+71
+00:03:10,080 --> 00:03:11,680
+our web server which runs the
+
+72
+00:03:11,680 --> 00:03:14,840
+application in production the dj-
+
+73
+00:03:14,840 --> 00:03:17,760
+databaseurl package with this package we
+
+74
+00:03:17,760 --> 00:03:20,120
+can connect to the database using our
+
+75
+00:03:20,120 --> 00:03:24,239
+URL then the psychop pg2 D binary
+
+76
+00:03:24,239 --> 00:03:27,360
+package this is a postgressql adapter
+
+77
+00:03:27,360 --> 00:03:29,439
+for python so they can communicate with
+
+78
+00:03:29,439 --> 00:03:30,400
+each other
+
+79
+00:03:30,400 --> 00:03:32,120
+and then the White Noise package which
+
+80
+00:03:32,120 --> 00:03:34,080
+we need to serve static files in
+
+81
+00:03:34,080 --> 00:03:36,840
+production additionally to serve images
+
+82
+00:03:36,840 --> 00:03:39,519
+we need to set up also the static files
+
+83
+00:03:39,519 --> 00:03:41,560
+configurations and run the collect
+
+84
+00:03:41,560 --> 00:03:44,360
+static command we also need to have our
+
+85
+00:03:44,360 --> 00:03:46,720
+code committed to a GitHub repository
+
+86
+00:03:46,720 --> 00:03:49,680
+ready to be deployed to the web server
+
+87
+00:03:49,680 --> 00:03:51,519
+these are standard requirements for any
+
+88
+00:03:51,519 --> 00:03:53,480
+D Jango deployment so if you have not
+
+89
+00:03:53,480 --> 00:03:55,799
+set them up yet check out my tutorial
+
+90
+00:03:55,799 --> 00:03:58,519
+videos on how to deploy a Jango app you
+
+91
+00:03:58,519 --> 00:04:02,280
+can find the link in the description
+
+92
+00:04:04,480 --> 00:04:07,720
+below okay let's get started first we
+
+93
+00:04:07,720 --> 00:04:10,040
+create our postgress
+
+94
+00:04:10,040 --> 00:04:12,560
+database so I click here provision
+
+95
+00:04:12,560 --> 00:04:15,319
+postgressql this will make Railway
+
+96
+00:04:15,319 --> 00:04:20,759
+initialize a post database deploying the
+
+97
+00:04:21,800 --> 00:04:25,800
+database okay our database is set up now
+
+98
+00:04:25,800 --> 00:04:28,280
+it also chose a name for our project so
+
+99
+00:04:28,280 --> 00:04:31,039
+fun smash let's rename the project now
+
+100
+00:04:31,039 --> 00:04:32,680
+so we go to
+
+101
+00:04:32,680 --> 00:04:35,880
+settings and here's the name and I
+
+102
+00:04:35,880 --> 00:04:39,199
+rename my project to
+
+103
+00:04:39,199 --> 00:04:41,880
+awesome okay and
+
+104
+00:04:41,880 --> 00:04:46,440
+update and the name is updated
+
+105
+00:04:46,919 --> 00:04:49,759
+nice let's connect now this database to
+
+106
+00:04:49,759 --> 00:04:51,680
+our Jango
+
+107
+00:04:51,680 --> 00:04:55,400
+app I click the variables tab to see the
+
+108
+00:04:55,400 --> 00:04:58,280
+connection information we're using our
+
+109
+00:04:58,280 --> 00:05:01,199
+URL to connect to our database so we can
+
+110
+00:05:01,199 --> 00:05:03,360
+choose here the private URL which has a
+
+111
+00:05:03,360 --> 00:05:06,080
+few more privacy features or just the
+
+112
+00:05:06,080 --> 00:05:08,479
+standard URL let's go with the standard
+
+113
+00:05:08,479 --> 00:05:12,080
+one so I'm copying here the value and go
+
+114
+00:05:12,080 --> 00:05:13,600
+to my
+
+115
+00:05:13,600 --> 00:05:16,800
+code I'm heading over to the EnV file in
+
+116
+00:05:16,800 --> 00:05:19,000
+the core
+
+117
+00:05:19,000 --> 00:05:22,639
+folder and add the URL to my database _
+
+118
+00:05:22,639 --> 00:05:24,360
+URL
+
+119
+00:05:24,360 --> 00:05:28,199
+variable okay save this file then I go
+
+120
+00:05:28,199 --> 00:05:30,600
+to my settings to be WiFi
+
+121
+00:05:30,600 --> 00:05:33,560
+I go to the database
+
+122
+00:05:33,560 --> 00:05:36,319
+configuration here it is so we are
+
+123
+00:05:36,319 --> 00:05:38,360
+connected to this database when the
+
+124
+00:05:38,360 --> 00:05:40,160
+environment variable is set to
+
+125
+00:05:40,160 --> 00:05:43,479
+production or the variable postgress
+
+126
+00:05:43,479 --> 00:05:46,600
+locally is set to true we're using the
+
+127
+00:05:46,600 --> 00:05:49,440
+DJ database URL package to connect to
+
+128
+00:05:49,440 --> 00:05:51,840
+the database and we're using the
+
+129
+00:05:51,840 --> 00:05:54,400
+database URL environment
+
+130
+00:05:54,400 --> 00:05:57,120
+variable so let's migrate our table now
+
+131
+00:05:57,120 --> 00:05:59,639
+to this database so I switched to this
+
+132
+00:05:59,639 --> 00:06:01,039
+variable now to
+
+133
+00:06:01,039 --> 00:06:03,400
+true that gives me access now to the
+
+134
+00:06:03,400 --> 00:06:04,639
+remote
+
+135
+00:06:04,639 --> 00:06:07,360
+database and now I'm ready to
+
+136
+00:06:07,360 --> 00:06:12,000
+migrate so python manage to
+
+137
+00:06:12,000 --> 00:06:15,000
+Pi
+
+138
+00:06:17,759 --> 00:06:20,880
+migrate it is creating now the tables in
+
+139
+00:06:20,880 --> 00:06:22,720
+the remote postrest
+
+140
+00:06:22,720 --> 00:06:25,160
+database let's go to railway and check
+
+141
+00:06:25,160 --> 00:06:26,199
+it
+
+142
+00:06:26,199 --> 00:06:30,840
+out I go here to the data tab
+
+143
+00:06:30,840 --> 00:06:34,599
+we can see here the creation in real
+
+144
+00:06:37,880 --> 00:06:42,039
+time all right the tables are created
+
+145
+00:06:42,039 --> 00:06:45,199
+now next let's create our super
+
+146
+00:06:45,199 --> 00:06:51,639
+user so python manage to Pi create super
+
+147
+00:06:52,800 --> 00:06:57,120
+user for username I choose
+
+148
+00:06:57,319 --> 00:06:59,800
+admin we can skip the email address
+
+149
+00:06:59,800 --> 00:07:02,800
+address
+
+150
+00:07:05,919 --> 00:07:09,400
+password and the super user is created
+
+151
+00:07:09,400 --> 00:07:12,720
+awesome so the database is set up I
+
+152
+00:07:12,720 --> 00:07:14,919
+changed my postest locally variable back
+
+153
+00:07:14,919 --> 00:07:17,440
+to
+
+154
+00:07:17,960 --> 00:07:21,319
+false save this file and let's go back
+
+155
+00:07:21,319 --> 00:07:25,120
+to railway now and create our web
+
+156
+00:07:25,120 --> 00:07:28,120
+application so I close this panel
+
+157
+00:07:28,120 --> 00:07:30,960
+here I click new
+
+158
+00:07:30,960 --> 00:07:33,360
+here then I'm connecting now to my
+
+159
+00:07:33,360 --> 00:07:35,199
+GitHub
+
+160
+00:07:35,199 --> 00:07:39,520
+repository my repon GitHub is called
+
+161
+00:07:40,360 --> 00:07:42,560
+Railway okay the connection is
+
+162
+00:07:42,560 --> 00:07:45,120
+established and first let's deploy this
+
+163
+00:07:45,120 --> 00:07:47,840
+application at this stage this will fail
+
+164
+00:07:47,840 --> 00:07:49,319
+because we have not set up all the
+
+165
+00:07:49,319 --> 00:07:51,479
+required configurations but we will do
+
+166
+00:07:51,479 --> 00:07:53,800
+that in a second so I click here this
+
+167
+00:07:53,800 --> 00:07:56,159
+button
+
+168
+00:07:56,639 --> 00:08:01,319
+deploy it is initializing the build now
+
+169
+00:08:02,720 --> 00:08:06,680
+okay it is deployed let's click on
+
+170
+00:08:06,680 --> 00:08:09,879
+it now first let's import the
+
+171
+00:08:09,879 --> 00:08:12,159
+variables here we import the environment
+
+172
+00:08:12,159 --> 00:08:14,440
+variables our project needs so I click
+
+173
+00:08:14,440 --> 00:08:15,560
+here on Raw
+
+174
+00:08:15,560 --> 00:08:18,199
+editor and copy and paste all my
+
+175
+00:08:18,199 --> 00:08:21,319
+variables so I go back to my
+
+176
+00:08:21,319 --> 00:08:26,879
+project to my EnV file copy
+
+177
+00:08:27,000 --> 00:08:30,120
+everything and paste it in here
+
+178
+00:08:30,120 --> 00:08:33,840
+then I change the environment to
+
+179
+00:08:34,080 --> 00:08:36,360
+production I get rid of the developer
+
+180
+00:08:36,360 --> 00:08:40,000
+variable this is just for the local
+
+181
+00:08:40,000 --> 00:08:44,279
+environment all right and then update
+
+182
+00:08:44,279 --> 00:08:46,680
+variables great now our environment
+
+183
+00:08:46,680 --> 00:08:49,519
+variables are added then I'm going to
+
+184
+00:08:49,519 --> 00:08:51,720
+the settings
+
+185
+00:08:51,720 --> 00:08:54,519
+tab here under the networking we create
+
+186
+00:08:54,519 --> 00:08:58,200
+now our URL so I click here on generate
+
+187
+00:08:58,200 --> 00:09:01,200
+domain
+
+188
+00:09:01,399 --> 00:09:03,399
+so this is a random domain Railway
+
+189
+00:09:03,399 --> 00:09:05,320
+created for us if we are not happy with
+
+190
+00:09:05,320 --> 00:09:08,399
+it we can also change
+
+191
+00:09:08,720 --> 00:09:14,480
+it so let's go with awesome Dash
+
+192
+00:09:14,480 --> 00:09:17,200
+flicker okay this domain is still
+
+193
+00:09:17,200 --> 00:09:20,160
+available
+
+194
+00:09:20,160 --> 00:09:22,720
+update here we can also add a custom
+
+195
+00:09:22,720 --> 00:09:25,040
+domain if we have
+
+196
+00:09:25,040 --> 00:09:28,120
+one and now we got our URL so if we
+
+197
+00:09:28,120 --> 00:09:30,839
+click on this link here
+
+198
+00:09:30,839 --> 00:09:33,440
+we got the URL working but obviously no
+
+199
+00:09:33,440 --> 00:09:35,200
+response yet because we have not yet
+
+200
+00:09:35,200 --> 00:09:37,399
+finished the
+
+201
+00:09:37,399 --> 00:09:39,959
+setup so let's copy the
+
+202
+00:09:39,959 --> 00:09:43,880
+domain and let's go back to the
+
+203
+00:09:45,279 --> 00:09:48,560
+code back to the settings topi file and
+
+204
+00:09:48,560 --> 00:09:51,959
+let's set up now the allowed
+
+205
+00:09:52,600 --> 00:09:55,320
+hosts so this is what you see when you
+
+206
+00:09:55,320 --> 00:09:57,800
+first install Jango so it gives you a
+
+207
+00:09:57,800 --> 00:10:00,360
+empty list but in production this
+
+208
+00:10:00,360 --> 00:10:02,640
+variable needs a host so we could for
+
+209
+00:10:02,640 --> 00:10:04,120
+example
+
+210
+00:10:04,120 --> 00:10:07,120
+write the Asterix which is the symbol of
+
+211
+00:10:07,120 --> 00:10:10,240
+a wild card so every host is allowed but
+
+212
+00:10:10,240 --> 00:10:12,240
+this is not very secure so let's list
+
+213
+00:10:12,240 --> 00:10:14,279
+here all the host now which we allow
+
+214
+00:10:14,279 --> 00:10:16,680
+access to our app so first I add my
+
+215
+00:10:16,680 --> 00:10:21,120
+local hosts so Local
+
+216
+00:10:21,360 --> 00:10:26,200
+Host then also the local IP address so
+
+217
+00:10:26,200 --> 00:10:29,200
+127.0.0.1
+
+218
+00:10:29,519 --> 00:10:32,320
+and then I'm adding here the remote
+
+219
+00:10:32,320 --> 00:10:35,240
+host so this is the domain I just
+
+220
+00:10:35,240 --> 00:10:39,040
+created okay these are the allow hosts
+
+221
+00:10:39,040 --> 00:10:41,760
+another variable we need is the csrf
+
+222
+00:10:41,760 --> 00:10:44,320
+trusted
+
+223
+00:10:47,000 --> 00:10:51,720
+Origins and here we add the URL of our
+
+224
+00:10:51,720 --> 00:10:55,040
+website so again I add here my domain
+
+225
+00:10:55,040 --> 00:10:57,600
+with the HTTP in
+
+226
+00:10:57,600 --> 00:11:00,720
+front Railway gives me a secure HTTP
+
+227
+00:11:00,720 --> 00:11:03,560
+connection out of the box so write
+
+228
+00:11:03,560 --> 00:11:06,800
+https column SL
+
+229
+00:11:06,800 --> 00:11:09,959
+slash okay this variable is set up now
+
+230
+00:11:09,959 --> 00:11:12,560
+as well we can save this
+
+231
+00:11:12,560 --> 00:11:14,639
+file and we could deploy this
+
+232
+00:11:14,639 --> 00:11:17,079
+application already on Railway this
+
+233
+00:11:17,079 --> 00:11:20,079
+would work however it is recommended to
+
+234
+00:11:20,079 --> 00:11:22,560
+add a proc file with a start command and
+
+235
+00:11:22,560 --> 00:11:25,079
+a runtime. txt file for the python
+
+236
+00:11:25,079 --> 00:11:28,440
+version as well so let's do that too I
+
+237
+00:11:28,440 --> 00:11:31,519
+go to the of my project create a new
+
+238
+00:11:31,519 --> 00:11:34,720
+file the proc
+
+239
+00:11:34,959 --> 00:11:39,360
+file like that with no file
+
+240
+00:11:39,360 --> 00:11:41,680
+extension and here we add the process
+
+241
+00:11:41,680 --> 00:11:43,600
+type which is
+
+242
+00:11:43,600 --> 00:11:46,639
+web then the web server we're using
+
+243
+00:11:46,639 --> 00:11:49,320
+we're using
+
+244
+00:11:50,839 --> 00:11:52,839
+gunicorn and then the application we
+
+245
+00:11:52,839 --> 00:11:55,200
+will like to run and the application is
+
+246
+00:11:55,200 --> 00:11:58,079
+in the whiskey file in our aore core
+
+247
+00:11:58,079 --> 00:12:03,360
+folder so so aore core do
+
+248
+00:12:03,360 --> 00:12:07,519
+whiskey like that okay save this file
+
+249
+00:12:07,519 --> 00:12:10,000
+now next the runtime. txt
+
+250
+00:12:10,000 --> 00:12:14,200
+file again in the root of our
+
+251
+00:12:16,920 --> 00:12:19,519
+project this file just declares which
+
+252
+00:12:19,519 --> 00:12:21,639
+python version we are using so I'm
+
+253
+00:12:21,639 --> 00:12:22,920
+writing
+
+254
+00:12:22,920 --> 00:12:27,880
+python Dash and in my case it is
+
+255
+00:12:27,880 --> 00:12:29,440
+3.1.3
+
+256
+00:12:29,440 --> 00:12:32,480
+okay that's it save this file and now
+
+257
+00:12:32,480 --> 00:12:36,480
+let's push these updated files to
+
+258
+00:12:38,639 --> 00:12:43,399
+GitHub I name this commit deploy to
+
+259
+00:12:43,920 --> 00:12:47,480
+railway then push
+
+260
+00:12:48,240 --> 00:12:51,440
+origin then back to
+
+261
+00:12:51,440 --> 00:12:54,000
+railway here I still have to deploy the
+
+262
+00:12:54,000 --> 00:12:56,240
+environment variables I set up before so
+
+263
+00:12:56,240 --> 00:12:57,839
+I click this
+
+264
+00:12:57,839 --> 00:12:59,440
+button
+
+265
+00:12:59,440 --> 00:13:02,639
+and the new build has been
+
+266
+00:13:02,639 --> 00:13:06,680
+initialized a few minutes
+
+267
+00:13:06,880 --> 00:13:10,399
+later okay our app is deployed now we
+
+268
+00:13:10,399 --> 00:13:12,720
+can see our latest commit is displayed
+
+269
+00:13:12,720 --> 00:13:15,639
+here and let's check out the website now
+
+270
+00:13:15,639 --> 00:13:17,760
+so
+
+271
+00:13:17,760 --> 00:13:21,279
+refresh and voila our website is
+
+272
+00:13:21,279 --> 00:13:23,880
+online now let's do some testing and
+
+273
+00:13:23,880 --> 00:13:27,480
+populate the website I add a category
+
+274
+00:13:27,480 --> 00:13:29,279
+then I sign up with a new user
+
+275
+00:13:29,279 --> 00:13:32,000
+and post the image from flicker so first
+
+276
+00:13:32,000 --> 00:13:35,480
+I'm logging into my admin
+
+277
+00:13:42,360 --> 00:13:44,959
+interface I create a category so I'm
+
+278
+00:13:44,959 --> 00:13:47,160
+going to my text
+
+279
+00:13:47,160 --> 00:13:50,519
+table add
+
+280
+00:13:51,560 --> 00:13:55,160
+Tech lscape
+
+281
+00:13:57,519 --> 00:14:00,399
+okay then I also add my new domain to
+
+282
+00:14:00,399 --> 00:14:02,920
+the SES
+
+283
+00:14:04,120 --> 00:14:07,199
+table so here instead of example.com we
+
+284
+00:14:07,199 --> 00:14:09,720
+add our
+
+285
+00:14:12,399 --> 00:14:15,680
+domain and display name
+
+286
+00:14:15,680 --> 00:14:19,320
+awesome okay and
+
+287
+00:14:19,440 --> 00:14:23,120
+save then back to the
+
+288
+00:14:23,639 --> 00:14:27,320
+homepage and our category is added here
+
+289
+00:14:27,320 --> 00:14:31,240
+great now sign up with a new user so I
+
+290
+00:14:31,240 --> 00:14:33,880
+log out from
+
+291
+00:14:38,120 --> 00:14:41,759
+admin create a new
+
+292
+00:14:41,959 --> 00:14:45,680
+account add a profile
+
+293
+00:14:46,240 --> 00:14:49,720
+image okay and
+
+294
+00:14:49,720 --> 00:14:53,000
+submit our profile is created now let's
+
+295
+00:14:53,000 --> 00:14:55,199
+create a
+
+296
+00:14:55,199 --> 00:14:57,680
+post I find an image on
+
+297
+00:14:57,680 --> 00:15:00,680
+flicker
+
+298
+00:15:01,440 --> 00:15:04,160
+I choose this one a nice picture of a
+
+299
+00:15:04,160 --> 00:15:09,199
+lake copy the URL and create a
+
+300
+00:15:10,680 --> 00:15:14,199
+post all right nice we successfully
+
+301
+00:15:14,199 --> 00:15:17,560
+deployed our app now to
+
+302
+00:15:17,600 --> 00:15:20,320
+railway if you like this kind of content
+
+303
+00:15:20,320 --> 00:15:22,160
+subscribe to this channel for more
+
+304
+00:15:22,160 --> 00:15:24,920
+awesome front end and backend tutorials
+
+305
+00:15:24,920 --> 00:15:26,639
+and please leave a comment below that
+
+306
+00:15:26,639 --> 00:15:28,759
+you subscribed that would help me a lot
+
+307
+00:15:28,759 --> 00:15:31,759
+with a YouTube algorithm thank you I see
+
+308
+00:15:31,759 --> 00:15:35,020
+you in the next one stay curious my
+
+309
+00:15:35,020 --> 00:15:42,500
+[Music]
+
+310
+00:15:42,500 --> 00:15:45,629
+[Applause]
+
+311
+00:15:47,519 --> 00:15:50,519
+friends

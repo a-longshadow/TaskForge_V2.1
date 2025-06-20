@@ -408,3 +408,41 @@
   - A  entrypoint.sh
   - M  taskforge/settings/production.py
 
+## 2025-06-20 19:56:22
+- **Command**: pre-commit
+- **Git Status**: f48a876
+- **Changes**: 
+  - M  .ai-knowledge/CHANGE_MANIFEST.md
+  - MM .ai-knowledge/PROJECT_STATE.md
+  - M  entrypoint.sh
+  - M  railway.toml
+  - M  taskforge/urls.py
+
+## 2025-06-20 20:14:04
+- **Command**: pre-commit
+- **Git Status**: c9e5cd3
+- **Changes**: 
+  -  M .ai-knowledge/CHANGE_MANIFEST.md
+  -  M .ai-knowledge/PROJECT_STATE.md
+  - M  entrypoint.sh
+  - ?? Dockerfile.minimal
+  - ?? minimal_entrypoint.sh
+  - ?? minimal_test.py
+  - ?? railway.minimal.json
+
+## 2025-06-20 20:29:43
+- **Command**: pre-commit
+- **Git Status**: 8c49290
+- **Changes**: 
+  -  M .ai-knowledge/CHANGE_MANIFEST.md
+  -  M .ai-knowledge/PROJECT_STATE.md
+  - A  Procfile
+  -  D railway.toml
+  - A  railway.toml.backup
+  - A  runtime.txt
+  - ?? ".ai-knowledge/[English (auto-generated)] Deploy Django app to Railway [DownSub.com].srt"
+  - ?? Dockerfile.minimal
+  - ?? minimal_entrypoint.sh
+  - ?? minimal_test.py
+  - ?? railway.minimal.json
+

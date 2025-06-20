@@ -1,0 +1,14 @@
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# Install only essential packages
+RUN pip install django gunicorn
+
+# Copy minimal files
+COPY minimal_test.py .
+COPY minimal_entrypoint.sh .
+RUN chmod +x minimal_entrypoint.sh
+
+# Use minimal entrypoint
+ENTRYPOINT ["./minimal_entrypoint.sh"] 
