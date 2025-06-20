@@ -11,22 +11,16 @@ ALLOWED_HOSTS = [
     '.railway.app',
     '.up.railway.app',
     'taskforge-web-production-d175.up.railway.app',
+    '*',  # Allow all hosts for Railway deployment
 ]
 
-# Security settings for production
+# Security settings for production - simplified for Railway
 SECRET_KEY = config('SECRET_KEY')
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
-SECURE_HSTS_SECONDS = 31536000  # 1 year
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
-SECURE_SSL_REDIRECT = False  # Disabled for Railway deployment
-SESSION_COOKIE_SECURE = False  # Disabled for Railway deployment
-CSRF_COOKIE_SECURE = False  # Disabled for Railway deployment
-CSRF_COOKIE_HTTPONLY = True
 X_FRAME_OPTIONS = 'DENY'
 
-# Database - use DATABASE_URL from environment
+# Database - simplified for Railway
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -37,24 +31,45 @@ DATABASES = {
         'PORT': config('DB_PORT', cast=int),
         'OPTIONS': {
             'sslmode': 'require',
-            'MAX_CONNECTIONS': 50,
         },
-        'CONN_MAX_AGE': 600,  # 10 minutes
+        'CONN_MAX_AGE': 600,
     }
 }
 
-# Cache - Redis from environment
+# Cache - simplified Redis configuration
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': config('REDIS_URL'),
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-        },
-        'KEY_PREFIX': 'taskforge',
-        'TIMEOUT': 300,  # 5 minutes default
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     }
 }
+
+# Static files - WhiteNoise for production
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Logging - simplified for Railway
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
+    },
+}
+
+# Railway-specific settings
+if 'RAILWAY_ENVIRONMENT' in os.environ:
+    # Railway automatically provides DATABASE_URL
+    if 'DATABASE_URL' in os.environ:
+        import dj_database_url
+        DATABASES['default'] = dj_database_url.parse(os.environ['DATABASE_URL'])
+        DATABASES['default']['CONN_MAX_AGE'] = 600
 
 # Celery - Redis from environment
 CELERY_BROKER_URL = config('REDIS_URL')
@@ -67,47 +82,6 @@ EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
-
-# Static files - WhiteNoise for production
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-# Logging - enhanced for production
-LOGGING['handlers']['file']['level'] = 'WARNING'
-LOGGING['handlers']['guardian_file']['level'] = 'INFO'
-LOGGING['handlers']['celery_file']['level'] = 'WARNING'
-
-# Add production-specific loggers
-LOGGING['handlers'].update({
-    'error_file': {
-        'level': 'ERROR',
-        'class': 'logging.handlers.RotatingFileHandler',
-        'filename': BASE_DIR / 'logs' / 'errors.log',
-        'maxBytes': 10485760,  # 10MB
-        'backupCount': 5,
-        'formatter': 'verbose',
-    },
-    'security_file': {
-        'level': 'WARNING',
-        'class': 'logging.handlers.RotatingFileHandler',
-        'filename': BASE_DIR / 'logs' / 'security.log',
-        'maxBytes': 10485760,  # 10MB
-        'backupCount': 10,
-        'formatter': 'verbose',
-    },
-})
-
-LOGGING['loggers'].update({
-    'django.security': {
-        'handlers': ['security_file'],
-        'level': 'WARNING',
-        'propagate': False,
-    },
-    'django.request': {
-        'handlers': ['error_file'],
-        'level': 'ERROR',
-        'propagate': False,
-    },
-})
 
 # Guardian settings for production
 GUARDIAN_SETTINGS.update({
@@ -126,13 +100,4 @@ FEATURE_FLAGS.update({
 
 # Performance optimizations
 CONN_MAX_AGE = 600  # 10 minutes
-DATABASES['default']['CONN_MAX_AGE'] = CONN_MAX_AGE
-
-# Render.com specific settings
-if 'RENDER' in os.environ:
-    ALLOWED_HOSTS.append(os.environ.get('RENDER_EXTERNAL_HOSTNAME'))
-    
-    # Use Render's database URL if available
-    if 'DATABASE_URL' in os.environ:
-        import dj_database_url
-        DATABASES['default'] = dj_database_url.parse(os.environ['DATABASE_URL']) 
+DATABASES['default']['CONN_MAX_AGE'] = CONN_MAX_AGE 

@@ -3,7 +3,6 @@ FROM python:3.12-slim
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-ENV DJANGO_SETTINGS_MODULE=taskforge.settings.production
 
 # Set work directory
 WORKDIR /app
@@ -31,5 +30,8 @@ RUN adduser --disabled-password --gecos '' appuser && \
     chown -R appuser:appuser /app
 USER appuser
 
-# Default command - Railway will set PORT automatically
-CMD python manage.py collectstatic --noinput && gunicorn taskforge.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 2 
+# Expose port
+EXPOSE 8000
+
+# Command that Railway will run
+CMD ["sh", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn taskforge.wsgi:application --bind 0.0.0.0:$PORT --workers 2"] 
