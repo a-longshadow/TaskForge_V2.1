@@ -3,7 +3,7 @@ FROM python:3.12-slim
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-ENV DJANGO_SETTINGS_MODULE=taskforge.settings.production
+ENV DJANGO_SETTINGS_MODULE=taskforge.settings.base
 
 # Set work directory
 WORKDIR /app
@@ -26,9 +26,6 @@ COPY . .
 # Create necessary directories
 RUN mkdir -p staticfiles logs cache
 
-# Collect static files
-RUN python manage.py collectstatic --noinput
-
 # Create non-root user
 RUN adduser --disabled-password --gecos '' appuser && \
     chown -R appuser:appuser /app
@@ -36,7 +33,7 @@ USER appuser
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD python -c "import requests; requests.get('http://localhost:$PORT/health/', timeout=10)"
+    CMD python -c "import requests; requests.get('http://localhost:$PORT/health/', timeout=10)" || exit 1
 
 # Default command (will be overridden by Railway)
-CMD ["gunicorn", "taskforge.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "2"] 
+CMD ["sh", "-c", "python manage.py collectstatic --noinput && gunicorn taskforge.wsgi:application --bind 0.0.0.0:$PORT --workers 2"] 
