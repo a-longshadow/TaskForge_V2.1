@@ -33,5 +33,5 @@ USER appuser
 # Expose port (Railway will set PORT dynamically)
 EXPOSE 8000
 
-# Command that Railway will run - fixed port binding
-CMD ["sh", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn taskforge.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 2 --timeout 120"] 
+# Shell form so $PORT expands properly
+CMD python manage.py migrate && python manage.py collectstatic --noinput && gunicorn taskforge.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120 
