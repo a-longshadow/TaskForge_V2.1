@@ -1,0 +1,54 @@
+[build]
+builder = "NIXPACKS"
+
+[deploy]
+healthcheckPath = "/health/"
+healthcheckTimeout = 300
+containerPort = 8000
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
+
+[[services]]
+name = "web"
+source = "."
+
+[services.web.build]
+buildCommand = "pip install -r requirements.txt"
+
+[services.web.deploy]
+startCommand = "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn taskforge.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
+healthcheckPath = "/health/"
+healthcheckTimeout = 300
+
+[[services]]
+name = "cache-refresh"
+source = "."
+
+[services.cache-refresh.build]
+buildCommand = "pip install -r requirements.txt"
+
+[services.cache-refresh.deploy]
+cronSchedule = "0 */4 * * *"  # Every 4 hours
+startCommand = "python manage.py auto_refresh_cache"
+
+[[services]]
+name = "daily-analytics"
+source = "."
+
+[services.daily-analytics.build]
+buildCommand = "pip install -r requirements.txt"
+
+[services.daily-analytics.deploy]
+cronSchedule = "0 1 * * *"  # Daily at 1 AM UTC
+startCommand = "python manage.py generate_daily_analytics"
+
+# Environment variables will be set through Railway dashboard
+# Required variables:
+# - DATABASE_URL (automatically provided by Railway PostgreSQL)
+# - DJANGO_SETTINGS_MODULE=taskforge.settings.production
+# - SECRET_KEY
+# - FIREFLIES_API_KEY
+# - GEMINI_API_KEY
+# - MONDAY_API_KEY
+# - MONDAY_BOARD_ID
+# - MONDAY_GROUP_ID 
