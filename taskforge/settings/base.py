@@ -1,6 +1,17 @@
 import os
 from pathlib import Path
-from decouple import config
+
+# Try to import decouple, but fall back to os.environ if not available
+try:
+    from decouple import config
+except ImportError:
+    def config(key, default=None, cast=None):
+        value = os.environ.get(key, default)
+        if cast and value is not None:
+            if cast == bool:
+                return value.lower() in ('true', '1', 'yes', 'on')
+            return cast(value)
+        return value
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 

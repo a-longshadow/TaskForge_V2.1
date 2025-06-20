@@ -6,28 +6,36 @@ DEBUG = False
 ALLOWED_HOSTS = ['*']  # Allow all hosts for Railway deployment testing
 
 # Security settings for production - simplified for Railway
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'fallback-secret-key-for-testing')
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
 
-# Database - simplified for Railway
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT', cast=int),
-        'OPTIONS': {
-            'sslmode': 'require',
-        },
-        'CONN_MAX_AGE': 600,
+# Database - Railway provides DATABASE_URL automatically
+if 'DATABASE_URL' in os.environ:
+    import dj_database_url
+    DATABASES = {
+        'default': dj_database_url.parse(os.environ['DATABASE_URL'])
     }
-}
+    DATABASES['default']['CONN_MAX_AGE'] = 600
+else:
+    # Fallback for manual configuration
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get('DB_NAME', 'taskforge'),
+            'USER': os.environ.get('DB_USER', 'postgres'),
+            'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+            'HOST': os.environ.get('DB_HOST', 'localhost'),
+            'PORT': os.environ.get('DB_PORT', '5432'),
+            'OPTIONS': {
+                'sslmode': 'require',
+            },
+            'CONN_MAX_AGE': 600,
+        }
+    }
 
-# Cache - simplified Redis configuration
+# Cache - simplified for Railway
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
@@ -54,40 +62,44 @@ LOGGING = {
     },
 }
 
-# Railway-specific settings
-if 'RAILWAY_ENVIRONMENT' in os.environ:
-    # Railway automatically provides DATABASE_URL
-    if 'DATABASE_URL' in os.environ:
-        import dj_database_url
-        DATABASES['default'] = dj_database_url.parse(os.environ['DATABASE_URL'])
-        DATABASES['default']['CONN_MAX_AGE'] = 600
+# API Keys - required for functionality
+FIREFLIES_API_KEY = os.environ.get('FIREFLIES_API_KEY', '')
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
+MONDAY_API_KEY = os.environ.get('MONDAY_API_KEY', '')
+MONDAY_BOARD_ID = os.environ.get('MONDAY_BOARD_ID', '')
+MONDAY_GROUP_ID = os.environ.get('MONDAY_GROUP_ID', '')
 
-# Celery - Redis from environment
-CELERY_BROKER_URL = config('REDIS_URL')
-CELERY_RESULT_BACKEND = config('REDIS_URL')
+# Celery - only if Redis is available
+REDIS_URL = os.environ.get('REDIS_URL', '')
+if REDIS_URL:
+    CELERY_BROKER_URL = REDIS_URL
+    CELERY_RESULT_BACKEND = REDIS_URL
+else:
+    # Disable Celery if no Redis
+    CELERY_TASK_ALWAYS_EAGER = True
 
-# Email settings for production
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = config('EMAIL_HOST', default='smtp.sendgrid.net')
-EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
+# Email settings - optional for Railway
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Console for testing
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.sendgrid.net')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 
-# Guardian settings for production
-GUARDIAN_SETTINGS.update({
+# Guardian settings - simplified for Railway
+GUARDIAN_SETTINGS = {
     'APPROVAL_TIMEOUT': 7200,  # 2 hours in production
     'AUTO_KNOWLEDGE_UPDATE': True,
     'REGRESSION_CHECK_ENABLED': True,
     'BACKUP_RETENTION_DAYS': 90,  # 3 months in production
-})
+}
 
 # Feature flags - production configuration
-FEATURE_FLAGS.update({
+FEATURE_FLAGS = {
     'ENABLE_DEBUG_TOOLBAR': False,
     'ENABLE_EXTENSIONS': False,
     'ENABLE_PRODUCTION_MONITORING': True,
-})
+}
 
 # Performance optimizations
 CONN_MAX_AGE = 600  # 10 minutes

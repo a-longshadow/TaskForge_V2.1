@@ -22,11 +22,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy project
 COPY . .
 
-# Copy and make entrypoint executable
-COPY entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh
-
-# Create necessary directories
+# Create necessary directories and set permissions
 RUN mkdir -p staticfiles logs cache
 
 # Create non-root user
@@ -35,7 +31,4 @@ RUN adduser --disabled-password --gecos '' appuser && \
 USER appuser
 
 # Expose port (Railway will set PORT dynamically)
-EXPOSE 8000
-
-# Use entrypoint script for debugging
-ENTRYPOINT ["/app/entrypoint.sh"] 
+EXPOSE 8000 
