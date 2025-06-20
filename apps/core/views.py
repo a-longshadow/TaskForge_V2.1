@@ -103,7 +103,7 @@ def handler404(request, exception):
             'message': 'The requested endpoint does not exist'
         }, status=404)
     
-    return render(request, 'errors/404.html', status=404)
+    return HttpResponse("Page not found", status=404)
 
 
 def handler500(request):
@@ -114,4 +114,4 @@ def handler500(request):
             'message': 'An unexpected error occurred'
         }, status=500)
     
-    return render(request, 'errors/500.html', status=500) 
+    return HttpResponse("Internal server error", status=500) 

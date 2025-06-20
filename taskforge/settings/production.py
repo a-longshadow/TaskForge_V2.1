@@ -35,12 +35,21 @@ else:
         }
     }
 
-# Cache - simplified for Railway
+# Cache - CRITICAL FIX: Add sessions cache backend
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    },
+    'sessions': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     }
 }
+
+# Session configuration - use database instead of cache for Railway
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_AGE = 86400  # 24 hours
 
 # Static files - WhiteNoise for production
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
